@@ -1,30 +1,59 @@
-# Flatfile.ResourceGenerator
-Roslyn source generator that takes flatfile strings and creates resource accessors that access strings resources in a controlled manner
+# Strings.ResourceGenerator
+Roslyn source generator that takes strings from various file formats and creates resource accessors that access strings resources in a controlled manner
 
-Multiple languages are supported by incorporating the region in the file name as &lt;basename&gt;.&lt;region&gt;.strings, e.g.
+Current support is for:
 
-* errors.strings [Neutral language]
-* errors.de.strings [German language]
+* .strings files (one per language, e.g. Errors.strings and Errors.de.strings)
+* .json files (multiple language support)
+* .yaml files (multiple language support)
+
+The generation will take into account the current region when selecting the language to pick strings from.
+
+For all of the formats the following applies:
+* Keys must be unique for each string resource
+* Values can either use standard formatting (e.g. {0}, {1}, etc) or interpolation (e.g. {name}), but not both
+* Signatures must match for all languages
+
+Parameters to strings also support type specifiers, formatting specifiers and signature ordering
+* Format: `:format`, e.g. `"String with {0:n2} formatted"`
+* Type: `@type`, e.g. `"String with {name@string}"`
+* Order: `@order`, e.g. `String with {name@string@1}"` (order requires type as well)
+
+Example of using all: `"String with {amount:n2@decimal@3}"'
+
+See examples of files online on the [project site](https://github.com/biggik/Strings.ResourceGenerator/tree/main/Strings.ResourceGenerator.Examples/Resources)
 
 ## .strings files
 
 A .strings file is simply a UTF-8 encoded flat file of string resources in a key=value format.
-Key names must be unique within a file, and both standard (e.g. {0}, {1}, etc) parameters and named (e.g. interpolated such as {key}, {value}, etc) parameters are supported.
 
-Parameters also support the following specifications:
-* format specifier of the form <code>:format</code>, e.g. {key:n2}
-* type specifier of the form <code>@type</code>, e.g. {key:n2@int}
-* order specifier of the form <code>@order</code>, e.g. {key:n2@int@0}
+## .json files
 
-And thus different .strings files for the same resource can use different formatting and different order of parameters
+.json files can be used to add strings. Json files need to be serializable from `Strings.ResourceGenerator.Models.StringsModel` (using [NewtonSoft Json](https://www.newtonsoft.com/json))
 
-## How to get started
+## .yaml files
 
-Reference the FlatFile.ResourceGenerate Nuget package
+.yaml files can be used to add strings. Yaml files need to be serializable from `Strings.ResourceGenerator.Models.StringsModel` (using [YamlDotNet](https://github.com/aaubry/YamlDotNet))
 
+# How to get started
+
+Reference the Strings.ResourceGenerate Nuget package
+
+Modify the reference as follows
+```
+		<PackageReference Include="Strings.ResourceGenerator" Version="0.5.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+```
+
+Include configuration for AdditionalFiles for the generator
 ```
 	<ItemGroup>
 		<AdditionalFiles Include="Resources\*.strings" />
+		<AdditionalFiles Include="Resources\JsonExample.json" />
+		<AdditionalFiles Include="Resources\NeutralExample.yaml" />
+		<AdditionalFiles Include="Resources\JsonExample.json" />
 		<AdditionalFiles Include="Resources\strings.config" />
 	</ItemGroup>
 ```
@@ -33,16 +62,34 @@ Reference the FlatFile.ResourceGenerate Nuget package
 While no configuration is required, the following are options to configure basic settings of the generator.
 Configuration is done by one or more strings.config files in the project
 
-The generic strings.config is the default where a more specific errors.strings.config would be used for errors.strings
+The generic strings.config is the default where a more specific Errors.strings.config would be used for Errors.strings
 
 The defaults for the parameters are as follows
 public=false
+preferConst=false
 prefix=
 namespace=Generated.ResourcesResources
 
+### public
+
+if set to true, then the string accessor clases are generated as public classes, suitable in library implementations consumed by other assemblies
+
+### preferConst
+
+if set to true, then, where possible, accessors are generated as `public const string` instead of `public static string`
+This is not possible for multiple languages, since there a lookup is done based on the locale, so the value is never constant
+
+### prefix
+
+If set, then generated classes will receive the prefix as a prefix, e.g. for Errors.strings and a prefix of "Application", the generated class would be ApplicationErrors
+
+## namespace
+
+If set, then generated classes will be generated in the specified namespace
+
 ## Examples
 
-See FlatFile.ResourceGenerator.Examples project. In its Resources folder are examples of both .strings files and a strings.config file
+See Strings.ResourceGenerator.Examples project. In its Resources folder are examples of both .strings files and a strings.config file
 
 ## Generation
 
@@ -53,3 +100,7 @@ Empty and commented out lines (prefixed by # or //) are ignored in string genera
 For multi-language string resources, validation is done on:
 * resource keys - each language must have all the same keys
 * resource string parameters - each parameterized resource key must have the same signature for all languages
+
+## TODO
+
+Consider supporting XLiff [https://en.wikipedia.org/wiki/XLIFF]

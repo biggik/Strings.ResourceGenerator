@@ -1,5 +1,4 @@
-﻿using Strings.ResourceGenerator.Data.Generators;
-using Strings.ResourceGenerator.Exceptions;
+﻿using Strings.ResourceGenerator.Exceptions;
 using Strings.ResourceGenerator.Generators.Interfaces;
 using Strings.ResourceGenerator.Models;
 using Strings.ResourceGenerator.Resources;
@@ -156,7 +155,7 @@ namespace Strings.ResourceGenerator.Generators
 
                 yield return "";
                 yield return $"{Constants.Ind2}/// <summary>";
-                yield return $"{Constants.Ind2}/// {Strings.Unescape(Strings.FormatDoc)}";
+                yield return $"{Constants.Ind2}/// {LocalStrings.Unescape(LocalStrings.FormatDoc)}";
                 yield return $"{Constants.Ind2}/// </summary>";
                 yield return $"{Constants.Ind2}{AccessModifier} static string Format(string name, params object[] args)";
                 yield return $"{Constants.Ind2}{{";
@@ -165,7 +164,7 @@ namespace Strings.ResourceGenerator.Generators
                 yield return $"{Constants.Ind2}}}";
                 yield return "";
                 yield return $"{Constants.Ind2}/// <summary>";
-                yield return $"{Constants.Ind2}/// {Strings.Unescape(Strings.UnescapeDoc)}";
+                yield return $"{Constants.Ind2}/// {LocalStrings.Unescape(LocalStrings.UnescapeDoc)}";
                 yield return $"{Constants.Ind2}/// </summary>";
                 yield return $"{Constants.Ind2}public static string Unescape(string value)";
                 yield return $"{Constants.Ind2}{{";
@@ -177,12 +176,12 @@ namespace Strings.ResourceGenerator.Generators
                 if (IsMultipleLanguages)
                 {
                     yield return $"{Constants.Ind2}/// <summary>";
-                    yield return $"{Constants.Ind2}/// {Strings.Unescape(Strings.GetStringDoc)}";
+                    yield return $"{Constants.Ind2}/// {LocalStrings.Unescape(LocalStrings.GetStringDoc)}";
                     yield return $"{Constants.Ind2}/// </summary>";
                     yield return $"{Constants.Ind2}public static string GetString(string name, params object[] args) => _localizer.Value.GetString(name, args);";
                     yield return "";
                     yield return $"{Constants.Ind2}/// <summary>";
-                    yield return $"{Constants.Ind2}/// {Strings.Unescape(Strings.GetStringOrEmptyDoc)}";
+                    yield return $"{Constants.Ind2}/// {LocalStrings.Unescape(LocalStrings.GetStringOrEmptyDoc)}";
                     yield return $"{Constants.Ind2}/// ";
                     yield return $"{Constants.Ind2}/// </summary>";
                     yield return $"{Constants.Ind2}public static string GetStringOrEmpty(string name, params object[] args) => _localizer.Value.GetStringOrEmpty(name, args);";

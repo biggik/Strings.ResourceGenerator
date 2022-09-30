@@ -1,6 +1,6 @@
 ﻿namespace Strings.ResourceGenerator.Resources
 {
-    internal static class Strings
+    internal static class LocalStrings
     {
         public static string FormatDoc => "Format the string identified by <paramref name=\"name\"/> with the given parameters";
         public static string GetStringDoc => "Get the string identified by <paramref name=\"name\"/> formatted with the specified parameters";

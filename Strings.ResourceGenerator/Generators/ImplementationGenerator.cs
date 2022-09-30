@@ -1,5 +1,4 @@
-﻿using Strings.ResourceGenerator.Generators;
-using Strings.ResourceGenerator.Generators.Interfaces;
+﻿using Strings.ResourceGenerator.Generators.Interfaces;
 using Strings.ResourceGenerator.Helpers;
 using Strings.ResourceGenerator.Models;
 using Strings.ResourceGenerator.Resources;
@@ -9,7 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace Strings.ResourceGenerator.Data.Generators
+namespace Strings.ResourceGenerator.Generators
 {
     /// <summary>
     /// Generate implementation code from an IGenerator
@@ -104,21 +103,21 @@ namespace Strings.ResourceGenerator.Data.Generators
         /// Generate a BaseType implementation
         /// </summary>
         /// <returns></returns>
-        public static string GenerateBaseType(this IGenerator generator) 
+        public static string GenerateBaseType(this IGenerator generator)
             => Generate(generator, Level.BaseType, withDocumentation: false);
 
         /// <summary>
         /// Generate an Implementation implementation
         /// </summary>
         /// <returns></returns>
-        public static string GenerateClass(this IGenerator generator) 
+        public static string GenerateClass(this IGenerator generator)
             => Generate(generator, Level.Implementation, withDocumentation: false);
 
         /// <summary>
         /// Generate a static accessor implementation
         /// </summary>
         /// <returns></returns>
-        public static string GenerateStaticAccessors(this IGenerator generator) 
+        public static string GenerateStaticAccessors(this IGenerator generator)
             => Generate(generator, Level.StaticAccessors, withDocumentation: true);
 
         private static string Generate(IGenerator generator, Level level, bool withDocumentation)
@@ -156,12 +155,12 @@ namespace Strings.ResourceGenerator.Data.Generators
             if (level == Level.Interface)
             {
                 buf.AppendLine($"{indent}{Constants.Ind1}/// <summary>");
-                buf.AppendLine($"{indent}{Constants.Ind1}/// {Strings.Unescape(Strings.GetStringDoc)}");
+                buf.AppendLine($"{indent}{Constants.Ind1}/// {LocalStrings.Unescape(LocalStrings.GetStringDoc)}");
                 buf.AppendLine($"{indent}{Constants.Ind1}/// </summary>");
                 buf.AppendLine($"{indent}{Constants.Ind1}string GetString(string name, params object[] args);");
                 buf.AppendLine();
                 buf.AppendLine($"{indent}{Constants.Ind1}/// <summary>");
-                buf.AppendLine($"{indent}{Constants.Ind1}/// {Strings.Unescape(Strings.GetStringOrEmptyDoc)}");
+                buf.AppendLine($"{indent}{Constants.Ind1}/// {LocalStrings.Unescape(LocalStrings.GetStringOrEmptyDoc)}");
                 buf.AppendLine($"{indent}{Constants.Ind1}/// </summary>");
                 buf.AppendLine($"{indent}{Constants.Ind1}string GetStringOrEmpty(string name, params object[] args);");
             }
@@ -184,7 +183,7 @@ namespace Strings.ResourceGenerator.Data.Generators
                     buf.AppendLine();
                 }
                 buf.AppendLine($"{indent}{Constants.Ind1}/// <summary>");
-                buf.AppendLine($"{indent}{Constants.Ind1}/// {Strings.Unescape(Strings.GetStringDoc)}");
+                buf.AppendLine($"{indent}{Constants.Ind1}/// {LocalStrings.Unescape(LocalStrings.GetStringDoc)}");
                 buf.AppendLine($"{indent}{Constants.Ind1}/// </summary>");
                 buf.AppendLine($"{indent}{Constants.Ind1}public{modifier}string GetString(string name, params object[] args)");
                 buf.AppendLine($"{indent}{Constants.Ind1}{{");
@@ -198,7 +197,7 @@ namespace Strings.ResourceGenerator.Data.Generators
                 buf.AppendLine($"{indent}{Constants.Ind1}}}");
                 buf.AppendLine();
                 buf.AppendLine($"{indent}{Constants.Ind1}/// <summary>");
-                buf.AppendLine($"{indent}{Constants.Ind1}/// {Strings.Unescape(Strings.GetStringOrEmptyDoc)}");
+                buf.AppendLine($"{indent}{Constants.Ind1}/// {LocalStrings.Unescape(LocalStrings.GetStringOrEmptyDoc)}");
                 buf.AppendLine($"{indent}{Constants.Ind1}/// </summary>");
                 buf.AppendLine($"{indent}{Constants.Ind1}public{modifier}string GetStringOrEmpty(string name, params object[] args)");
                 buf.AppendLine($"{indent}{Constants.Ind1}{{");
@@ -258,7 +257,7 @@ namespace Strings.ResourceGenerator.Data.Generators
                     else if (level == Level.Implementation || level == Level.StaticAccessors)
                     {
                         Debug.WriteLine($"ResourceGenerator: {res.Key} = {res.StringType}");
-                        var preferConst = !generator.Data.IsMultipleLanguages 
+                        var preferConst = !generator.Data.IsMultipleLanguages
                             && generator.Data.Config.PreferConstOverStatic
                             && res.StringType == StringType.Simple;
                         var decl = level == Level.Implementation

@@ -4,7 +4,7 @@ using YamlDotNet.Serialization;
 namespace Strings.ResourceGenerator.Models
 {
     /// <summary>
-    /// The base for the yaml model
+    /// The base for structured models
     /// </summary>
     public class StringsModel
     {
