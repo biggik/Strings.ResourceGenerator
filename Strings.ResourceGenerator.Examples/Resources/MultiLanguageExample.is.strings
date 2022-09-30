@@ -1,0 +1,9 @@
+﻿InterpolatedFormatString=Þetta er strengur sem notar {interpolation} formun til að bæta við færibreytum
+InterpolatedWithFormatting={number:n2} er formuð tala með tveim aukastöfum
+InterpolatedWithOrderingTypeAndFormatting={number:n2@int@1} er formuð, týpuð og röðuð {description@string@0}, með tveim aukastöfum
+InterpolatedWithTypeAndFormatting={number:o@DateTime} er formuð, týpuð dagsetning, með roundtrip formun
+SimpleString=Þetta er einfaldur strengur
+StandardFormatString=Þetta er strengur sem notar {0} formun til að bæta við færibreytum
+StandardWithFormatting={0:n2} er formuð tala með tveim aukastöfum
+StandardWithOrderingTypeAndFormatting={0:n2@int@1} er formuð, týpuð og röðuð {1@string@0}, með tveim aukastöfum
+StandardWithTypeAndFormatting={0:o@DateTime} er formuð, týpuð dagsetning, með roundtrip formun

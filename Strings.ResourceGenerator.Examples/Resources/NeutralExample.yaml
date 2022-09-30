@@ -1,0 +1,14 @@
+﻿---
+config:
+  prefix: 
+  prefer_const: true
+  public: false
+  namespace: Strings.ResourceGenerator.Examples.Resources
+strings:
+- key: OneStringWithDouble
+  value: '{{Url}} parameter'
+  context: Context for id 1
+- key: SimplyToDemonstrateNeutralGeneration
+  value: This is only here for that purpose
+- key: OneWithInterpolation
+  value: Interpolation {within} string

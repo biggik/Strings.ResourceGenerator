@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<LangVersion>preview</LangVersion>
+		<EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\FlatFile.ResourceGenerator\Strings.ResourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" GeneratePathProperty="true" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AdditionalFiles Include="Resources\*.strings" />
+		<AdditionalFiles Include="Resources\JsonExample.json" />
+		<AdditionalFiles Include="Resources\NeutralExample.yaml" />
+		<AdditionalFiles Include="Resources\JsonExample.json" />
+		<AdditionalFiles Include="Resources\strings.config" />
+	</ItemGroup>
+</Project>
