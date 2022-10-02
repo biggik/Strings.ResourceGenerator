@@ -99,14 +99,14 @@ namespace Strings.ResourceGenerator.Generators.Data
                 {
                     getter = $"           <getter_operator> \"<string>\";";
                 }
-                staticGetter = $" => _localizer.Value.{resourceString.Key}({string.Join(", ", parser.SignatureParameters)});";
+                staticGetter = $" => Current.{resourceString.Key}({string.Join(", ", parser.SignatureParameters)});";
                 interfaceDefinition = ";";
             }
             else
             {
                 property = $"        <modifier>string {resourceString.Key}";
                 getter = "           <getter_operator> \"<string>\";";
-                staticGetter = $" => _localizer.Value.{resourceString.Key};";
+                staticGetter = $" => Current.{resourceString.Key};";
                 interfaceDefinition = " { get; }";
             }
         }

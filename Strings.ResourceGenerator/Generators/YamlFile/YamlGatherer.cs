@@ -19,8 +19,6 @@ namespace Strings.ResourceGenerator.Generators.YamlFile
 
                 foreach (var yamlFile in allYamlFiles)
                 {
-                    Debug.WriteLine($"ResourceGenerator: {Path.GetFileName(yamlFile.Path)}");
-                    
                     var clazz = Path.GetFileNameWithoutExtension(yamlFile.Path).Split('.')[0];
 
                     yield return YamlProvider.Provide(yamlFile.Path, clazz, yamlFile.GetText(context.CancellationToken).ToString());

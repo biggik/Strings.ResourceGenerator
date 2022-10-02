@@ -7,7 +7,7 @@ Current support is for:
 * .json files (multiple language support)
 * .yaml files (multiple language support)
 
-The generation will take into account the current region when selecting the language to pick strings from.
+The generated accessors use the current region when selecting the language to pick strings from at runtime.
 
 For all of the formats the following applies:
 * Keys must be unique for each string resource
@@ -104,3 +104,11 @@ For multi-language string resources, validation is done on:
 ## TODO
 
 Consider supporting XLiff [https://en.wikipedia.org/wiki/XLIFF]
+
+# Release notes
+
+## 0.50
+Initial release with support for .strings files
+
+## 0.51
+Adding support for .json and .yaml files as well as generation that supports direct access to locale resources via generated resource accessors

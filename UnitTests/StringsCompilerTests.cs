@@ -45,7 +45,7 @@ namespace UnitTests
                     )
             };
 
-            var config = new StringConfiguration();
+            var config = new StringConfiguration { NameSpace = "Some.Namespace" };
             var generator = StringsProvider.Provide(
                 "Strings", 
                 config,

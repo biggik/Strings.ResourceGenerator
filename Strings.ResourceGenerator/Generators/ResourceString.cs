@@ -87,8 +87,6 @@ namespace Strings.ResourceGenerator.Generators
         /// <exception cref="InvalidDataException">In case of a mix of {0} and {interpolated} parameters, this exception is thrown</exception>
         public ResourceString(string locale, string key, string value, string context = null)
         {
-            //Debug.WriteLine($"ResourceGenerator: {locale}, {key}, {value}");
-
             Context = context;
             parser = new ResourceParser(locale, key, value);
             parsed = new ParsedResource(parser, this);

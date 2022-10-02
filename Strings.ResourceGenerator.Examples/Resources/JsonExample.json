@@ -8,16 +8,40 @@
 	"strings": [
 		{
 			"key": "OneStringWithDouble",
-			"value": "{{Url}} parameter",
+			"values": [
+				{
+					"value": "{{Url}} parameter"
+				},
+				{
+					"locale": "is",
+					"value": "{{Url}} færibreyta"
+				}
+			],
 			"context": "Context for id 1"
 		},
 		{
 			"key": "SimplyToDemonstrateNeutralGeneration",
-			"value": "This is only here for that purpose"
+			"values": [
+				{
+					"value": "This is only here for that purpose"
+				},
+				{
+					"locale": "is",
+					"value": "Aðeins hér til að sýna einfaldaln streng"
+				}
+			]
 		},
 		{
 			"key": "OneWithInterpolation",
-			"value": "Interpolation {within@string} string"
+			"values": [
+				{
+					"value": "Interpolation {within@string} string"
+				},
+				{
+					"locale": "is",
+					"value": "Umbreyttur strengur {within@string}"
+				}
+			]
 		}
 	]
 }

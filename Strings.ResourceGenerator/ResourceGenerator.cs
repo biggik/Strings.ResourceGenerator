@@ -24,7 +24,6 @@ namespace Strings.ResourceGenerator
         /// <inheritdoc />
         public void Execute(GeneratorExecutionContext context)
         {
-            Debug.WriteLine("ResourceGenerator: Starting generation");
             var stringsGenerators = StringsGatherer.Gather(context);
             var yamlGenerators = YamlGatherer.Gather(context);
             var jsonGenerators = JsonGatherer.Gather(context);

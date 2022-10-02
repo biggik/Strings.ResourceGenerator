@@ -129,7 +129,8 @@ namespace Strings.ResourceGenerator.Generators
             if (level == Level.Interface)
             {
                 buf.AppendLine($"{indent}#region IGeneratedLocalizerFor{generator.Data.ClassName}");
-                buf.AppendLine($"{indent}private interface IGeneratedLocalizerFor{generator.Data.ClassName}");
+                var modifier = generator.Data.Config.GeneratePublic ? "public" : "internal";
+                buf.AppendLine($"{indent}{modifier} interface IGeneratedLocalizerFor{generator.Data.ClassName}");
             }
             else if (level == Level.BaseType)
             {
@@ -256,7 +257,6 @@ namespace Strings.ResourceGenerator.Generators
                     }
                     else if (level == Level.Implementation || level == Level.StaticAccessors)
                     {
-                        Debug.WriteLine($"ResourceGenerator: {res.Key} = {res.StringType}");
                         var preferConst = !generator.Data.IsMultipleLanguages
                             && generator.Data.Config.PreferConstOverStatic
                             && res.StringType == StringType.Simple;

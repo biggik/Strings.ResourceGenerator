@@ -19,8 +19,6 @@ namespace Strings.ResourceGenerator.Generators.JsonFile
 
                 foreach (var jsonFile in allJsonFiles)
                 {
-                    Debug.WriteLine($"ResourceGenerator: {Path.GetFileName(jsonFile.Path)}");
-                    
                     var clazz = Path.GetFileNameWithoutExtension(jsonFile.Path).Split('.')[0];
 
                     yield return JsonProvider.Provide(jsonFile.Path, clazz, jsonFile.GetText(context.CancellationToken).ToString());

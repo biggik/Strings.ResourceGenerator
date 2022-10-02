@@ -21,11 +21,6 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
         {
             Data = data;
             Data.Resources = InitializeResources(lines);
-
-            //foreach (var r in Data.Resources)
-            //{
-            //    Debug.WriteLine($"ResourceGenerator: AAA {r.Key}={r.Value}");
-            //}
         }
 
         private List<ResourceString> InitializeResources(IEnumerable<string> lines)
@@ -39,8 +34,6 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
         {
             foreach (var line in lines)
             {
-                //Debug.WriteLine($"ResourceGenerator: BBB {line}");
-
                 if (string.IsNullOrWhiteSpace(line))
                 {
                     continue;

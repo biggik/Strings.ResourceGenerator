@@ -90,16 +90,24 @@ namespace Strings.ResourceGenerator.Generators
 
                 if (IsMultipleLanguages)
                 {
-                    yield return $"{Constants.Ind2}private static readonly Lazy<IGeneratedLocalizerFor{Clazz}> _localizer = new Lazy<IGeneratedLocalizerFor{Clazz}>(InitializeLocalizer);";
+                    if (generators.Count > 1)
+                    {
+                        yield return $"{Constants.Ind2}// Lazy initializers for each locale";
+                        foreach (var generator in generators.Values)
+                        {
+                            yield return $"{Constants.Ind2}private static readonly Lazy<IGeneratedLocalizerFor{Clazz}> _{generator.Data.Locale.ToLower()} = new Lazy<IGeneratedLocalizerFor{Clazz}>(() => InitializeLocalizerFor(\"{generator.Data.Locale}\"));";
+                        }
+                    }
+
                     yield return "";
-                    yield return $"{Constants.Ind2}private static IGeneratedLocalizerFor{Clazz} InitializeLocalizer()";
+                    yield return $"{Constants.Ind2}private static IGeneratedLocalizerFor{Clazz} InitializeLocalizerFor(string locale)";
                     yield return $"{Constants.Ind2}{{";
 
                     // Add initializer functions to initialize localizer instance
                     int index = 0;
                     foreach (var generator in generators.Values.Where(x => !x.Data.IsNeutralLanguage).Select(x => x))
                     {
-                        yield return $"{Constants.Ind3}{(index == 0 ? "" : "else ")}if (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == \"{generator.Data.Locale}\")";
+                        yield return $"{Constants.Ind3}{(index == 0 ? "" : "else ")}if (locale == \"{generator.Data.Locale}\")";
                         yield return $"{Constants.Ind3}{{";
                         yield return $"{Constants.Ind4}return new {generator.GeneratedClassName(generator.Data.Locale)}();";
                         yield return $"{Constants.Ind3}}}";
@@ -115,10 +123,47 @@ namespace Strings.ResourceGenerator.Generators
                     }
                     else
                     {
-                        yield return $"{Constants.Ind3}return new GeneratedLocalizerFor{Clazz}Neutral();";
+                        yield return $"{Constants.Ind3}return new GeneratedLocalizerFor{Clazz}Neutral();"; 
+                    }
+                    yield return $"{Constants.Ind2}}}";
+
+                    index = 0;
+                    yield return "";
+                    yield return $"{Constants.Ind2}private static IGeneratedLocalizerFor{Clazz} Current";
+                    yield return $"{Constants.Ind2}{{";
+                    yield return $"{Constants.Ind3}get";
+                    yield return $"{Constants.Ind3}{{";
+                    foreach (var generator in generators.Values.Where(x => !x.Data.IsNeutralLanguage).Select(x => x))
+                    {
+                        yield return $"{Constants.Ind4}{(index == 0 ? "" : "else ")}if (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToUpper() == \"{generator.Data.Locale}\")";
+                        yield return $"{Constants.Ind4}{{";
+                        yield return $"{Constants.Ind5}return _{generator.Data.Locale.ToLower()}.Value;";
+                        yield return $"{Constants.Ind4}}}";
+                        index++;
                     }
 
+                    if (generators.Count > 1)
+                    {
+                        yield return $"{Constants.Ind4}else";
+                        yield return $"{Constants.Ind4}{{";
+                        yield return $"{Constants.Ind5}return _neutral.Value;";
+                        yield return $"{Constants.Ind4}}}";
+                    }
+                    else
+                    {
+                        yield return $"{Constants.Ind4}return _neutral.Value;";
+                    }
+
+                    yield return $"{Constants.Ind3}}}";
                     yield return $"{Constants.Ind2}}}";
+                    
+                    foreach (var generator in generators.Values)
+                    {
+                        yield return "";
+                        var name = generator.Data.IsNeutralLanguage ? "Neutral" : generator.Data.Locale.ToUpper();
+                        var modifier = generator.Data.Config.GeneratePublic ? "public" : "internal";
+                        yield return $"{Constants.Ind2}{modifier} static IGeneratedLocalizerFor{Clazz} {name} => _{generator.Data.Locale.ToLower()}.Value;";
+                    }
                 }
 
                 // Loop through the resources and generate interface and locale classes
@@ -178,13 +223,13 @@ namespace Strings.ResourceGenerator.Generators
                     yield return $"{Constants.Ind2}/// <summary>";
                     yield return $"{Constants.Ind2}/// {LocalStrings.Unescape(LocalStrings.GetStringDoc)}";
                     yield return $"{Constants.Ind2}/// </summary>";
-                    yield return $"{Constants.Ind2}public static string GetString(string name, params object[] args) => _localizer.Value.GetString(name, args);";
+                    yield return $"{Constants.Ind2}public static string GetString(string name, params object[] args) => Current.GetString(name, args);";
                     yield return "";
                     yield return $"{Constants.Ind2}/// <summary>";
                     yield return $"{Constants.Ind2}/// {LocalStrings.Unescape(LocalStrings.GetStringOrEmptyDoc)}";
                     yield return $"{Constants.Ind2}/// ";
                     yield return $"{Constants.Ind2}/// </summary>";
-                    yield return $"{Constants.Ind2}public static string GetStringOrEmpty(string name, params object[] args) => _localizer.Value.GetStringOrEmpty(name, args);";
+                    yield return $"{Constants.Ind2}public static string GetStringOrEmpty(string name, params object[] args) => Current.GetStringOrEmpty(name, args);";
                     yield return "";
 
                     // Validate that each resource string is represented in all locales for the localization
@@ -222,10 +267,6 @@ namespace Strings.ResourceGenerator.Generators
 
                 if (errors.Count > 0)
                 {
-                    foreach (var error in errors)
-                    {
-                        Debug.WriteLine($"ResourceGenerator: {error}");
-                    }
                     throw new StringGeneratorException($"Errors during string generation", errors);
                 }
             }

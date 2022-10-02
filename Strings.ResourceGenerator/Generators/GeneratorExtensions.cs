@@ -49,17 +49,19 @@ namespace Strings.ResourceGenerator.Generators
         {
             bool IsLocale(ResourceStringValue rsv)
             {
-                return rsv.Locale == generator.Data.Locale
-                    || (generator.Data.Locale == Constants.Neutral && string.IsNullOrEmpty(rsv.Locale));
+                return (generator.Data.Locale == Constants.Neutral && string.IsNullOrEmpty(rsv.Locale))
+                        || string.Equals(rsv.Locale, generator.Data.Locale, StringComparison.InvariantCultureIgnoreCase);
             }
             var multiValue = strings.Where(x => x.Values != null && x.Values.Any(IsLocale))
                                     .Select(x =>
                                     {
                                         var rsv = x.Values.First(IsLocale);
                                         return new ResourceString(generator.Data.Locale, x.Key, rsv.Value, x.Context);
-                                    });
-            var singleValue = strings.Where(x => generator.Data.Locale == Constants.Neutral)
-                                     .Select(x => new ResourceString(generator.Data.Locale, x.Key, x.Value, x.Context));
+                                    })
+                                    .ToList();
+            var singleValue = strings.Where(x => generator.Data.Locale == Constants.Neutral && !string.IsNullOrEmpty(x.Value))
+                                     .Select(x => new ResourceString(generator.Data.Locale, x.Key, x.Value, x.Context))
+                                     .ToList();
             return Enumerable.Concat(multiValue, singleValue)
                              .OrderBy(x => x.Key)
                              .ToList();

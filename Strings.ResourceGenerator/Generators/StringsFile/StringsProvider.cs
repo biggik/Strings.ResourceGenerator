@@ -17,15 +17,16 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
             var generator = new LocalizerGenerator(config, clazz);
             foreach (var resource in resources)
             {
-                Debug.WriteLine($"ResourceGenerator: {Path.GetFileName(resource.path)}");
-
                 var locale = Path.GetFileNameWithoutExtension(resource.path)
                                  .Replace($"{clazz}.", "");
                 if (locale == clazz)
                 {
                     locale = Constants.Neutral;
                 }
-                Debug.WriteLine($"ResourceGenerator: Strings generating for {clazz} [{locale}]");
+                else
+                {
+                    locale = locale.ToUpper();
+                }
 
                 var data = new GeneratorData
                 {

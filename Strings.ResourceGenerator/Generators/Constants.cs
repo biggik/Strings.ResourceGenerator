@@ -26,6 +26,11 @@
         public const string Ind4 = "                ";
 
         /// <summary>
+        /// The default indent, quintuple
+        /// </summary>
+        public const string Ind5 = "                    ";
+
+        /// <summary>
         /// The neutral resource
         /// </summary>
         public const string Neutral = "Neutral";

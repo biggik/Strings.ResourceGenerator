@@ -58,7 +58,6 @@ namespace Strings.ResourceGenerator.Generators.Parsers
                     let rpart = part.Substring(0, pos > 0 ? pos : part.Length)
                     select rpart.Trim()
                 );
-            //Debug.WriteLine($"ResourceGenerator: {regexString}");
             return new Regex(regexString, RegexOptions.Compiled);
         }
 
@@ -176,17 +175,6 @@ namespace Strings.ResourceGenerator.Generators.Parsers
                 var interpolated = Parse(GroupMatches("interpolated"),
                                      x => NameHelper.CreateValidIdentifier(x),
                                      x => x);
-
-                //Debug.WriteLine($"ResourceGenerator: Key: {key}, Value: {value}");
-                //Debug.WriteLine($"ResourceGenerator: standard: {standard.Count()}, interpolated: {interpolated.Count()}");
-                //foreach (var m in standard)
-                //{
-                //    Debug.WriteLine($"ResourceGenerator: Standard: {m}");
-                //}
-                //foreach (var m in interpolated)
-                //{
-                //    Debug.WriteLine($"ResourceGenerator: Interpolated: {m}");
-                //}
 
                 if (standard.Any() && interpolated.Any())
                 {
