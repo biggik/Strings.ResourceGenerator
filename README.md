@@ -112,3 +112,6 @@ Initial release with support for .strings files
 
 ## 0.51
 Adding support for .json and .yaml files as well as generation that supports direct access to locale resources via generated resource accessors
+
+## 0.52
+Minor update. Fixed one typo, and generate configuration entries into source as comments
