@@ -167,6 +167,9 @@ namespace Strings.ResourceGenerator.Generators
                         yield return "";
                         var name = generator.Data.IsNeutralLanguage ? "Neutral" : generator.Data.Locale.ToUpper();
                         var modifier = generator.Data.Config.GeneratePublic ? "public" : "internal";
+                        yield return $"{Constants.Ind2}/// <summary>";
+                        yield return $"{Constants.Ind2}/// Accessor for the '{generator.Data.Locale.ToLower()}' locale";
+                        yield return $"{Constants.Ind2}/// </summary>";
                         yield return $"{Constants.Ind2}{modifier} static IGeneratedLocalizerFor{Clazz} {name} => _{generator.Data.Locale.ToLower()}.Value;";
                     }
                 }

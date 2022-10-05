@@ -121,3 +121,6 @@ Minor update. Fixed deserialization of json config
 
 ## 0.54
 Minor update. Fixed documentation generation for public interface
+
+## 0.55
+Minor update. Fixed documentation generation for public properties
