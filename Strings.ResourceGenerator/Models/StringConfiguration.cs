@@ -24,6 +24,7 @@ namespace Strings.ResourceGenerator.Models
         /// If true, the generated class will be public, otherwise internal
         /// </summary>
         [YamlMember(Alias = "public", ApplyNamingConventions = false)]
+        [JsonProperty("public")]
         public bool GeneratePublic { get; set; }
 
         /// <summary>
