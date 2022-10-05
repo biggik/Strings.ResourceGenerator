@@ -115,3 +115,9 @@ Adding support for .json and .yaml files as well as generation that supports dir
 
 ## 0.52
 Minor update. Fixed one typo, and generate configuration entries into source as comments
+
+## 0.53
+Minor update. Fixed deserialization of json config
+
+## 0.54
+Minor update. Fixed documentation generation for public interface

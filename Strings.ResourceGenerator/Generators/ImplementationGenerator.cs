@@ -129,6 +129,9 @@ namespace Strings.ResourceGenerator.Generators
             if (level == Level.Interface)
             {
                 buf.AppendLine($"{indent}#region IGeneratedLocalizerFor{generator.Data.ClassName}");
+                buf.AppendLine($"{indent}/// <summary>");
+                buf.AppendLine($"{indent}/// Interface IGeneratedLocalizerFor{generator.Data.ClassName} for string access to {generator.Data.ClassName} resources");
+                buf.AppendLine($"{indent}/// </summary>");
                 var modifier = generator.Data.Config.GeneratePublic ? "public" : "internal";
                 buf.AppendLine($"{indent}{modifier} interface IGeneratedLocalizerFor{generator.Data.ClassName}");
             }
@@ -253,7 +256,9 @@ namespace Strings.ResourceGenerator.Generators
                 {
                     if (level == Level.Interface)
                     {
-                        buf.AppendLine($"{Constants.Ind1}{res.InterfaceDeclaration}");
+                        var fullDecl = $"{Constants.Ind1}{res.InterfaceDeclaration}";
+                        buf.AppendLine(Documentation(fullDecl, res.Context, res.CleanValue));
+                        buf.AppendLine(fullDecl);
                     }
                     else if (level == Level.Implementation || level == Level.StaticAccessors)
                     {
