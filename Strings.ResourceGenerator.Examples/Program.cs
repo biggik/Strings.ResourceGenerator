@@ -19,6 +19,7 @@ namespace Strings.ResourceGenerator.Examples
             Console.WriteLine(JsonExample.OneStringWithDouble);
             Console.WriteLine(JsonExample.OneWithInterpolation("something"));
 
+            Console.WriteLine(JsonExample.OneStringWithDouble);
             Console.WriteLine(JsonExample.IS.OneStringWithDouble);
             Console.WriteLine(JsonExample.Neutral.OneStringWithDouble);
 

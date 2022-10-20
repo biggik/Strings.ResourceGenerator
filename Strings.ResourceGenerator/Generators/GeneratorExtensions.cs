@@ -33,7 +33,7 @@ namespace Strings.ResourceGenerator.Generators
                 {
                     Config = model.Config,
                     Locale = locale,
-                    ClassName = clazz,
+                    ClassName = $"{model.Config.Prefix}{clazz}",
                     SourceFile = path,
                     IsMultipleLanguages = isMultipleLanguages
                 };

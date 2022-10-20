@@ -1,8 +1,8 @@
 ﻿using Strings.ResourceGenerator.Generators.Data;
 using Strings.ResourceGenerator.Generators.Interfaces;
+using Strings.ResourceGenerator.Models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Strings.ResourceGenerator.Generators.StringsFile
@@ -10,6 +10,18 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
     internal class StringsGenerator : IGenerator
     {
         public GeneratorData Data { get; }
+
+        /// <summary>
+        /// Creates a new instance of StringGenerator and parses lines from a .strings
+        /// file for resources
+        /// </summary>
+        /// <param name="data">The data for the generator</param>
+        /// <param name="strings">All strings from the strings file</param>
+        public StringsGenerator(GeneratorData data, List<ResourceStringModel> strings)
+        {
+            Data = data;
+            Data.Resources = this.InitializeResources(strings);
+        }
 
         /// <summary>
         /// Creates a new instance of StringGenerator and parses lines from a .strings
@@ -43,7 +55,7 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
                     Data.CommentedLines++;
                     continue;
                 }
-         
+
                 // Parse the line to a key / value pair
                 string key, value;
                 try
@@ -69,7 +81,7 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
         /// </summary>
         /// <param name="line">The line to check</param>
         /// <returns>True if a comment line</returns>
-        private static bool IsCommented(string line)
+        internal static bool IsCommented(string line)
         {
             line = line.TrimStart();
             return line.Length > 0 && line[0] == '#'

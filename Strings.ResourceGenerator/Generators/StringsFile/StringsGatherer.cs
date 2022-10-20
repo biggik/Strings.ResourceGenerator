@@ -82,16 +82,21 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
                                 .Select(x => (x.Split('=')[0], x.Split('=')[1]))
                                 .ToDictionary(x => x.Item1, x => x.Item2);
 
-                return new StringConfiguration
-                {
-                    NameSpace = config.ContainsKey("namespace") ? config["namespace"] : "Generated.Resources",
-                    Prefix = config.ContainsKey("prefix") ? config["prefix"] : "",
-                    GeneratePublic = config.ContainsKey("public") && config["public"] == "true",
-                    PreferConstOverStatic = config.ContainsKey("preferConst") && config["preferConst"] == "true"
-                };
+                return GetConfigFromDictionary(config);
             }
 
             return StringConfiguration.DefaultConfiguration;
+        }
+
+        internal static StringConfiguration GetConfigFromDictionary(Dictionary<string, string> config)
+        {
+            return new StringConfiguration
+            {
+                NameSpace = config.ContainsKey("namespace") ? config["namespace"] : "Generated.Resources",
+                Prefix = config.ContainsKey("prefix") ? config["prefix"] : "",
+                GeneratePublic = config.ContainsKey("public") && config["public"] == "true",
+                PreferConstOverStatic = config.ContainsKey("preferConst") && config["preferConst"] == "true"
+            };
         }
     }
 }

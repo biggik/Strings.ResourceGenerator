@@ -16,6 +16,7 @@
 
 	<ItemGroup>
 		<AdditionalFiles Include="Resources\*.strings" />
+		<None Remove="Resources\MultiLocaleStrings.strings" />
 		<AdditionalFiles Include="Resources\JsonExample.json" />
 		<AdditionalFiles Include="Resources\NeutralExample.yaml" />
 		<AdditionalFiles Include="Resources\JsonExample.json" />

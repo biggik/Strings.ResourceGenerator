@@ -8,7 +8,7 @@ namespace UnitTests
     public class YamlComplerTests
     {
         [Fact]
-        public void MultiLocaleResourceTest()
+        public void YamlResourceTest()
         {
             var yaml = @"config:
   namespace: some.namespace

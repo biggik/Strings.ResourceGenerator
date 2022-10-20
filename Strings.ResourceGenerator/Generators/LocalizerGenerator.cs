@@ -4,7 +4,6 @@ using Strings.ResourceGenerator.Models;
 using Strings.ResourceGenerator.Resources;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Strings.ResourceGenerator.Generators
@@ -67,7 +66,7 @@ namespace Strings.ResourceGenerator.Generators
 
                     var v = GetType().Assembly.GetName().Version;
                     yield return $"{Constants.Ind1}/// <summary>";
-                    yield return $"{Constants.Ind1}/// Generated string accessor class for {Clazz}";
+                    yield return $"{Constants.Ind1}/// Generated string accessor class for {Prefix}{Clazz}";
                     yield return $"{Constants.Ind1}/// Configuration:";
                     yield return $"{Constants.Ind1}///     Namespace: {config.NameSpace}";
                     yield return $"{Constants.Ind1}///     Public   : {config.GeneratePublic}";
@@ -100,12 +99,12 @@ namespace Strings.ResourceGenerator.Generators
                         yield return $"{Constants.Ind2}// Lazy initializers for each locale";
                         foreach (var generator in generators.Values)
                         {
-                            yield return $"{Constants.Ind2}private static readonly Lazy<IGeneratedLocalizerFor{Clazz}> _{generator.Data.Locale.ToLower()} = new Lazy<IGeneratedLocalizerFor{Clazz}>(() => InitializeLocalizerFor(\"{generator.Data.Locale}\"));";
+                            yield return $"{Constants.Ind2}private static readonly Lazy<IGeneratedLocalizerFor{Prefix}{Clazz}> _{generator.Data.Locale.ToLower()} = new Lazy<IGeneratedLocalizerFor{Prefix}{Clazz}>(() => InitializeLocalizerFor(\"{generator.Data.Locale}\"));";
                         }
                     }
 
                     yield return "";
-                    yield return $"{Constants.Ind2}private static IGeneratedLocalizerFor{Clazz} InitializeLocalizerFor(string locale)";
+                    yield return $"{Constants.Ind2}private static IGeneratedLocalizerFor{Prefix}{Clazz} InitializeLocalizerFor(string locale)";
                     yield return $"{Constants.Ind2}{{";
 
                     // Add initializer functions to initialize localizer instance
@@ -123,18 +122,18 @@ namespace Strings.ResourceGenerator.Generators
                     {
                         yield return $"{Constants.Ind3}else";
                         yield return $"{Constants.Ind3}{{";
-                        yield return $"{Constants.Ind4}return new GeneratedLocalizerFor{Clazz}Neutral();";
+                        yield return $"{Constants.Ind4}return new GeneratedLocalizerFor{Prefix}{Clazz}Neutral();";
                         yield return $"{Constants.Ind3}}}";
                     }
                     else
                     {
-                        yield return $"{Constants.Ind3}return new GeneratedLocalizerFor{Clazz}Neutral();"; 
+                        yield return $"{Constants.Ind3}return new GeneratedLocalizerFor{Prefix}{Clazz}Neutral();"; 
                     }
                     yield return $"{Constants.Ind2}}}";
 
                     index = 0;
                     yield return "";
-                    yield return $"{Constants.Ind2}private static IGeneratedLocalizerFor{Clazz} Current";
+                    yield return $"{Constants.Ind2}private static IGeneratedLocalizerFor{Prefix}{Clazz} Current";
                     yield return $"{Constants.Ind2}{{";
                     yield return $"{Constants.Ind3}get";
                     yield return $"{Constants.Ind3}{{";
@@ -170,7 +169,7 @@ namespace Strings.ResourceGenerator.Generators
                         yield return $"{Constants.Ind2}/// <summary>";
                         yield return $"{Constants.Ind2}/// Accessor for the '{generator.Data.Locale.ToLower()}' locale";
                         yield return $"{Constants.Ind2}/// </summary>";
-                        yield return $"{Constants.Ind2}{modifier} static IGeneratedLocalizerFor{Clazz} {name} => _{generator.Data.Locale.ToLower()}.Value;";
+                        yield return $"{Constants.Ind2}{modifier} static IGeneratedLocalizerFor{Prefix}{Clazz} {name} => _{generator.Data.Locale.ToLower()}.Value;";
                     }
                 }
 

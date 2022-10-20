@@ -315,7 +315,8 @@ namespace Strings.ResourceGenerator.Generators
             if (!string.IsNullOrWhiteSpace(context))
             {
                 yield return $"{declIndent}/// <remarks>";
-                yield return $"{declIndent}/// {context}";
+                yield return $"{declIndent}/// <para><b>Context:</b></para>";
+                yield return $"{declIndent}/// <para>{context}</para>";
                 yield return $"{declIndent}/// </remarks>";
             }
             yield return $"{declIndent}/// </summary>";
