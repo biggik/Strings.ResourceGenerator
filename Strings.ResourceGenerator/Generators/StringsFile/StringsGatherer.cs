@@ -92,10 +92,10 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
         {
             return new StringConfiguration
             {
-                NameSpace = config.ContainsKey("namespace") ? config["namespace"] : "Generated.Resources",
+                NameSpace = config.ContainsKey("namespace") ? config["namespace"] : StringConfiguration.DefaultNamespace,
                 Prefix = config.ContainsKey("prefix") ? config["prefix"] : "",
                 GeneratePublic = config.ContainsKey("public") && config["public"] == "true",
-                PreferConstOverStatic = config.ContainsKey("preferConst") && config["preferConst"] == "true"
+                PreferConstOverStatic = !config.ContainsKey("preferConst") || config.ContainsKey("preferConst") && config["preferConst"] == "true"
             };
         }
     }

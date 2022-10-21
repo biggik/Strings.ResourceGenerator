@@ -1,7 +1,5 @@
 ﻿{
 	"config": {
-		"prefix": "",
-		"preferConst": true,
 		"public": true,
 		"namespace": "Strings.ResourceGenerator.Examples.Resources"
 	},

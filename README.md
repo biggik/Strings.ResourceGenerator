@@ -4,10 +4,11 @@ Roslyn source generator that takes strings from various file formats and creates
 Current support is for:
 
 * .strings files (one per language, e.g. Errors.strings and Errors.de.strings)
+* .strings file (multiple language support in a side-by-side fashion, with embedded configuration)
 * .json files (multiple language support)
 * .yaml files (multiple language support)
 
-The generated accessors use the current region when selecting the language to pick strings from at runtime.
+The generated accessors use the current region when selecting the language to pick strings from at runtime, but also accessor for per-language fetching of resources, e.g. via Errors.Neutral.MyErrorString and Errors.DE.MyErrorString
 
 For all of the formats the following applies:
 * Keys must be unique for each string resource
@@ -27,6 +28,8 @@ See examples of files online on the [project site](https://github.com/biggik/Str
 
 A .strings file is simply a UTF-8 encoded flat file of string resources in a key=value format.
 
+A slightly more complex version of a .strings file includes configuration and allows for multi-locale strings
+
 ## .json files
 
 .json files can be used to add strings. Json files need to be serializable from `Strings.ResourceGenerator.Models.StringsModel` (using [NewtonSoft Json](https://www.newtonsoft.com/json))
@@ -41,13 +44,13 @@ Reference the Strings.ResourceGenerate Nuget package
 
 Modify the reference as follows
 ```
-		<PackageReference Include="Strings.ResourceGenerator" Version="0.5.0">
+		<PackageReference Include="Strings.ResourceGenerator" Version="0.6.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 ```
 
-Include configuration for AdditionalFiles for the generator
+Include configuration for AdditionalFiles for the generator, here is one example:
 ```
 	<ItemGroup>
 		<AdditionalFiles Include="Resources\*.strings" />
@@ -60,40 +63,45 @@ Include configuration for AdditionalFiles for the generator
 
 ## Configuration
 While no configuration is required, the following are options to configure basic settings of the generator.
-Configuration is done by one or more strings.config files in the project
+Configuration is done by differently based on the type of source file, but is embedded in the file in all cases except where a strings.config file is used. This should be fairly obvious from the example project on GitHub.
 
-The generic strings.config is the default where a more specific Errors.strings.config would be used for Errors.strings
+A generic strings.config is the default where a more specific Errors.strings.config could be used for Errors.strings
 
 The defaults for the parameters are as follows
 public=false
-preferConst=false
+preferConst=true
 prefix=
-namespace=Generated.ResourcesResources
+namespace=Strings.Resources
 
 ### public
 
-if set to true, then the string accessor clases are generated as public classes, suitable in library implementations consumed by other assemblies
+if set to true, then the string accessor classes are generated as `public` classes, suitable in library implementations consumed by other assemblies, otherwise the accessors are `internal`
 
 ### preferConst
 
-if set to true, then, where possible, accessors are generated as `public const string` instead of `public static string`
+if set to true (the default), then, where possible, accessors are generated as `public const string` instead of `public static string`
 This is not possible for multiple languages, since there a lookup is done based on the locale, so the value is never constant
 
 ### prefix
 
-If set, then generated classes will receive the prefix as a prefix, e.g. for Errors.strings and a prefix of "Application", the generated class would be ApplicationErrors
+If set, then generated classes will be prefixed, e.g. for Errors.strings and a prefix of `Application`, the generated class would be `ApplicationErrors`
 
 ## namespace
 
-If set, then generated classes will be generated in the specified namespace
+If set, then generated classes will be generated in the specified namespace, otherwise they will default to the `Strings.Resources` namespace
 
 ## Examples
 
-See Strings.ResourceGenerator.Examples project. In its Resources folder are examples of both .strings files and a strings.config file
+See Strings.ResourceGenerator.Examples project. In its Resources folder are examples of 
+
+- .strings files and a strings.config file (see [MultiLanguageExample.strings](https://github.com/biggik/Strings.ResourceGenerator/blob/main/Strings.ResourceGenerator.Examples/Resources/MultiLanguageExample.strings), [MultiLanguageExample.is.strings](https://github.com/biggik/Strings.ResourceGenerator/blob/main/Strings.ResourceGenerator.Examples/Resources/MultiLanguageExample.is.strings), [strings.config](https://github.com/biggik/Strings.ResourceGenerator/blob/main/Strings.ResourceGenerator.Examples/Resources/strings.config))
+- .strings file with config and multi-locale resources (see [MultiLocaleStrings.strings](https://github.com/biggik/Strings.ResourceGenerator/blob/main/Strings.ResourceGenerator.Examples/Resources/MultiLocaleStrings.strings))
+- .yml file with config and single-locale resources (see [NeutralExample.yaml](https://github.com/biggik/Strings.ResourceGenerator/blob/main/Strings.ResourceGenerator.Examples/Resources/NeutralExample.yaml))
+- .json file with config and multi-locale resources (see [JsonExample.json](https://github.com/biggik/Strings.ResourceGenerator/blob/main/Strings.ResourceGenerator.Examples/Resources/JsonExample.json))
 
 ## Generation
 
-Empty and commented out lines (prefixed by # or //) are ignored in string generation
+For .strings files, empty and commented out lines (prefixed by # or //) are ignored in string generation
 
 ## Validation
 
@@ -124,3 +132,11 @@ Minor update. Fixed documentation generation for public interface
 
 ## 0.55
 Minor update. Fixed documentation generation for public properties
+
+## 0.56
+Minor update. 
+
+## 0.60
+Update to .strings handling to allow for multi-locale and configuration in a single file
+Documentation updated
+

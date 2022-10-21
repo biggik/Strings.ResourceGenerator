@@ -8,6 +8,8 @@ namespace Strings.ResourceGenerator.Models
     /// </summary>
     public class StringConfiguration
     {
+        public const string DefaultNamespace = "Strings.Resources";
+
         /// <summary>
         /// The namespace to apply to generated code
         /// </summary>
@@ -40,7 +42,7 @@ namespace Strings.ResourceGenerator.Models
         internal static StringConfiguration DefaultConfiguration
             => new()
             {
-                NameSpace = "Generated.Resources",
+                NameSpace = DefaultNamespace,
                 Prefix = ""
             };
     }

@@ -1,8 +1,5 @@
 ﻿---
 config:
-  prefix: 
-  prefer_const: true
-  public: false
   namespace: Strings.ResourceGenerator.Examples.Resources
 strings:
 - key: OneStringWithDouble

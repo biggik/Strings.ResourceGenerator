@@ -1,8 +1,6 @@
 ﻿[Configuration]
 public=true
-prefix=ML_
 namespace=Strings.ResourceGenerator.Examples.Resources
-preferConst=true
 
 [Resources]
 /* Example of interpolated string */
