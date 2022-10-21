@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using YamlDotNet.Serialization;
 
 namespace Strings.ResourceGenerator.Generators.StringsFile
 {
     internal static class StringsProvider
     {
-        private static readonly Regex resourceRegex = new(@"^((?<locale>\w\w(-\w\w)?):)?(?<key>[a-zA-Z_][\w_]*)=(?<value>.*)$");
+        private static readonly Regex resourceRegex = new(@"^((?<locale>\w\w(-\w\w)?):)?(((?<key>[a-zA-Z_][\w_]*))=)?(?<value>.*)$");
 
         public static LocalizerGenerator Provide(
             string clazz, 
@@ -155,21 +154,29 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
                     var key = match.Groups["key"];
                     var value = match.Groups["value"];
 
-                    if (key.Success && value.Success)
+
+                    var resourceKey = key.Success ? key.Value : null;
+                    // If locale is specified, and we have a current entry, then add the value for the same key 
+                    if (CurrentIsValid() && !key.Success && locale.Success)
+                    {
+                        resourceKey = current.Key;
+                    }
+
+                    if (resourceKey != null && value.Success)
                     {
                         // This means we have an identified resource
 
-                        if (CurrentIsValid() && key.Value != current.Key)
+                        if (CurrentIsValid() && resourceKey != current.Key)
                         {
                             yield return current;
                             current = new ResourceStringModel
                             {
-                                Key = key.Value
+                                Key = resourceKey
                             };
                         }
-                        else if (current.Key == null)
+                        else
                         {
-                            current.Key = key.Value;
+                            current.Key ??= resourceKey;
                         }
 
                         current.Values ??= new List<ResourceStringValue>();

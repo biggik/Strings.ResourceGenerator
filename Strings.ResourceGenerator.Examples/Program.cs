@@ -24,6 +24,9 @@ namespace Strings.ResourceGenerator.Examples
             Console.WriteLine(JsonExample.Neutral.OneStringWithDouble);
 
             Console.WriteLine(new string('-', 60));
+            Console.WriteLine(MultiLocaleStrings.SimpleString);
+
+            Console.WriteLine(new string('-', 60));
             Console.WriteLine(MultiLanguageExample.InterpolatedFormatString("interpolation"));
             Console.WriteLine(MultiLanguageExample.InterpolatedWithFormatting(2));
             Console.WriteLine(MultiLanguageExample.InterpolatedWithOrderingTypeAndFormatting("description", 1));

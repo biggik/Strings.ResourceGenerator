@@ -9,32 +9,32 @@ is:InterpolatedFormatString=Þetta er strengur sem notar {interpolation} til að
 
 /* Example of interpolated string with formatting */
 InterpolatedWithFormatting={number:n2} is a formatted number with two decimals
-is:InterpolatedWithFormatting={number:n2} er formuð tala með tveim aukastöfum
+is:{number:n2} er formuð tala með tveim aukastöfum
 
 /* Example of interpolated string with ordering, type and formatting */
 InterpolatedWithOrderingTypeAndFormatting={number:n2@int@1} is a formatted, typed and ordered {description@string@0}, with two decimals
-is:InterpolatedWithOrderingTypeAndFormatting={number:n2@int@1} er formuð, týpuð og röðuð {description@string@0}, með tveim aukastöfum
+is:{number:n2@int@1} er formuð, týpuð og röðuð {description@string@0}, með tveim aukastöfum
 
 /* Example of interpolated string with
    - type, and
    - formatting
 */
 InterpolatedWithTypeAndFormatting={number:o@DateTime} is a formatted, typed date and time, with roundtrip formatting
-is:InterpolatedWithTypeAndFormatting={number:o@DateTime} er formuð, týpuð sem dagsetning og tími, með roundtrip formun
+is:{number:o@DateTime} er formuð, týpuð sem dagsetning og tími, með roundtrip formun
 
 /* Example of a simple string */
 SimpleString=This is a simple string
-is:SimpleString=Þetta er einfaldur strengur
+is:Þetta er einfaldur strengur
 
 /* Example of a string with standard string.format formatting */
 StandardFormatString=This is a string that uses {0} format to add parameters
-is:StandardFormatString=Þetta er strengur sem notar {0} formun til að bæta við færibreytum
+is:Þetta er strengur sem notar {0} formun til að bæta við færibreytum
 
 StandardWithFormatting={0:n2} is a formatted number with two decimals
-is:StandardWithFormatting={0:n2} er formuð tala með tveim aukastöfum
+is:{0:n2} er formuð tala með tveim aukastöfum
 
 StandardWithOrderingTypeAndFormatting={0:n2@int@1} is a formatted, typed and ordered number {1@string@0}, with two decimals
-is:StandardWithOrderingTypeAndFormatting={0:n2@int@1} er formuð, týpuð og röðuð tala {1@string@0}, með tveim aukastöfum
+is:{0:n2@int@1} er formuð, týpuð og röðuð tala {1@string@0}, með tveim aukastöfum
 
 StandardWithTypeAndFormatting={0:o@DateTime} is a formatted, typed date and time, with roundtrip formatting
-is:StandardWithTypeAndFormatting={0:o@DateTime} er formuð, týpuð dagsetning og tími, með roundtrip formun
+is:{0:o@DateTime} er formuð, týpuð dagsetning og tími, með roundtrip formun

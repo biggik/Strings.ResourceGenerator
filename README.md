@@ -30,6 +30,28 @@ A .strings file is simply a UTF-8 encoded flat file of string resources in a key
 
 A slightly more complex version of a .strings file includes configuration and allows for multi-locale strings
 
+### .strings only
+The format of the file should be 
+```
+ResourceKey=Resource value
+ExceptionLogging=An exception has occurred. Error message is {message}
+```
+### .strings with multi-locale
+The format of the file should be 
+```
+[Configuration]
+namespace=MyLibrary.Namespace
+
+[Resources]
+/* Used by exception logger middleware */
+ExceptionLogging=An exception has occurred. Error message is {message}
+is:ExceptionLogging=Villa kom upp. Villuskilaboð voru {message}
+
+/* Or, alternatively, skip the resource key for additional locale resources */
+ExceptionLogging2=An exception has occurred. Error message is {message}
+is:Villa kom upp. Villuskilaboð voru {message}
+```
+
 ## .json files
 
 .json files can be used to add strings. Json files need to be serializable from `Strings.ResourceGenerator.Models.StringsModel` (using [NewtonSoft Json](https://www.newtonsoft.com/json))
@@ -140,3 +162,5 @@ Minor update.
 Update to .strings handling to allow for multi-locale and configuration in a single file
 Documentation updated
 
+## 0.61
+Allow resource key to be optional (.strings file) for additional locale strings
