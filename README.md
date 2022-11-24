@@ -164,3 +164,6 @@ Documentation updated
 
 ## 0.61
 Allow resource key to be optional (.strings file) for additional locale strings
+
+## 0.62
+Temporarily stop splitting long lines due to complexity with interpolation
