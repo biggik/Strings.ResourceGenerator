@@ -57,14 +57,14 @@ namespace Strings.ResourceGenerator.Generators
                 {
                     const string prefix = $"{Constants.Ind1}// ";
 
-                    yield return $"{prefix} ResurceAccessorGenerator by Status ehf - Generated {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} (UTC)";
+                    var v = typeof(LocalizerGenerator).Assembly.GetName().Version;
+                    yield return $"{prefix} ResurceAccessorGenerator v{v} by Status ehf - Generated {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} (UTC)";
                     yield return $"{prefix} Generated from: {string.Join(", ", generators.Select(x => x.Value.Data.SourceFile))}";
                     foreach (var line in generators.First().Value.Headers(prefix))
                     {
                         yield return line;
                     }
 
-                    var v = GetType().Assembly.GetName().Version;
                     yield return $"{Constants.Ind1}/// <summary>";
                     yield return $"{Constants.Ind1}/// Generated string accessor class for {Prefix}{Clazz}";
                     yield return $"{Constants.Ind1}/// Configuration:";

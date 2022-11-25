@@ -137,33 +137,36 @@ Consider supporting XLiff [https://en.wikipedia.org/wiki/XLIFF]
 
 # Release notes
 
-## 0.50
+## 0.5.0
 Initial release with support for .strings files
 
-## 0.51
+## 0.5.1
 Adding support for .json and .yaml files as well as generation that supports direct access to locale resources via generated resource accessors
 
-## 0.52
+## 0.5.2
 Minor update. Fixed one typo, and generate configuration entries into source as comments
 
-## 0.53
+## 0.5.3
 Minor update. Fixed deserialization of json config
 
-## 0.54
+## 0.5.4
 Minor update. Fixed documentation generation for public interface
 
-## 0.55
+## 0.5.5
 Minor update. Fixed documentation generation for public properties
 
-## 0.56
+## 0.5.6
 Minor update. 
 
-## 0.60
+## 0.6.0
 Update to .strings handling to allow for multi-locale and configuration in a single file
 Documentation updated
 
-## 0.61
+## 0.6.1
 Allow resource key to be optional (.strings file) for additional locale strings
 
-## 0.62
+## 0.6.2
 Temporarily stop splitting long lines due to complexity with interpolation
+
+## 0.6.3
+Generate generator version into header comments (for clarity)
