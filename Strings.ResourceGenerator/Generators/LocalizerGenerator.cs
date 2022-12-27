@@ -49,7 +49,7 @@ namespace Strings.ResourceGenerator.Generators
         /// <exception cref="StringGeneratorException"></exception>
         public string Generate()
         {
-            return string.Join(Environment.NewLine, Lines());
+            return string.Join(Environment.NewLine, Lines().Where(x => x != null));
 
             IEnumerable<string> Lines()
             {
@@ -89,6 +89,7 @@ namespace Strings.ResourceGenerator.Generators
                 {
                     yield return header;
                 }
+                yield return Constants.Ind1.ExcludeAttributeIndented(config.ExcludeFromCodeCoverage);
                 yield return $"{Constants.Ind1}{AccessModifier} static class {Prefix}{Clazz}";
                 yield return $"{Constants.Ind1}{{";
 

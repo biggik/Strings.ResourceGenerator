@@ -3,7 +3,9 @@ using Strings.ResourceGenerator.Generators.Interfaces;
 using Strings.ResourceGenerator.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text;
 
 namespace Strings.ResourceGenerator.Generators
 {
@@ -67,5 +69,21 @@ namespace Strings.ResourceGenerator.Generators
                              .ToList();
         }
 
+        public static void AddExcludeAttribute(this StringBuilder buf, bool apply, string indent)
+        {
+            if (apply)
+            {
+                buf.AppendLine(indent.ExcludeAttributeIndented(apply));
+            }
+        }
+
+        public static string ExcludeAttributeIndented(this string indent, bool apply)
+        {
+            if (apply)
+            {
+                return $"{indent}[{typeof(ExcludeFromCodeCoverageAttribute).FullName.Replace("Attribute", "")}]";
+            }
+            return null;
+        }
     }
 }

@@ -170,3 +170,6 @@ Temporarily stop splitting long lines due to complexity with interpolation
 
 ## 0.6.3
 Generate generator version into header comments (for clarity)
+
+## 0.6.4
+Added [ExcludeFromCodeCoverage] attribute to generated classes (configurable)

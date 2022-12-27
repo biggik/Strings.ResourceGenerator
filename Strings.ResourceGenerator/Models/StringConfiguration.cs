@@ -39,6 +39,14 @@ namespace Strings.ResourceGenerator.Models
         [JsonProperty("preferConst")]
         public bool PreferConstOverStatic { get; set; }
 
+        /// <summary>
+        /// If set to true (default) then an [ExcludeFromCodeCoverage] attribute will be
+        /// added to all generated classes
+        /// </summary>
+        [YamlMember(Alias = "exclude_coverage", ApplyNamingConventions = false)]
+        [JsonProperty("excludeCoverage")]
+        public bool ExcludeFromCodeCoverage { get; set; } = true;
+
         internal static StringConfiguration DefaultConfiguration
             => new()
             {
