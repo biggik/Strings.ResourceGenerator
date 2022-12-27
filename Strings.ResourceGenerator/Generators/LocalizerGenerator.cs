@@ -14,12 +14,12 @@ namespace Strings.ResourceGenerator.Generators
 
         internal LocalizerGenerator(StringConfiguration config, string clazz)
         {
-            this.config = config;
+            this.Config = config;
             Clazz = clazz;
         }
 
-        private string AccessModifier => config.GeneratePublic ? "public" : "internal";
-        private string Prefix => config.Prefix;
+        private string AccessModifier => Config.GeneratePublic ? "public" : "internal";
+        private string Prefix => Config.Prefix;
 
         /// <summary>
         /// Add a generator for a locale
@@ -38,7 +38,7 @@ namespace Strings.ResourceGenerator.Generators
 
         public string Clazz { get; }
         private readonly List<string> errors = new();
-        private readonly StringConfiguration config;
+        internal StringConfiguration Config { get; private set; }
 
         /// <summary>
         /// Generate resource classes for the localizer
@@ -58,7 +58,7 @@ namespace Strings.ResourceGenerator.Generators
                     const string prefix = $"{Constants.Ind1}// ";
 
                     var v = typeof(LocalizerGenerator).Assembly.GetName().Version;
-                    yield return $"{prefix} ResurceAccessorGenerator v{v} by Status ehf - Generated {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} (UTC)";
+                    yield return $"{prefix} Strings.ResourceGenerator v{v} by Status ehf - Generated {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} (UTC)";
                     yield return $"{prefix} Generated from: {string.Join(", ", generators.Select(x => x.Value.Data.SourceFile))}";
                     foreach (var line in generators.First().Value.Headers(prefix))
                     {
@@ -67,11 +67,12 @@ namespace Strings.ResourceGenerator.Generators
 
                     yield return $"{Constants.Ind1}/// <summary>";
                     yield return $"{Constants.Ind1}/// Generated string accessor class for {Prefix}{Clazz}";
-                    yield return $"{Constants.Ind1}/// Configuration:";
-                    yield return $"{Constants.Ind1}///     Namespace: {config.NameSpace}";
-                    yield return $"{Constants.Ind1}///     Public   : {config.GeneratePublic}";
-                    yield return $"{Constants.Ind1}///     Prefix   : {config.Prefix}";
-                    yield return $"{Constants.Ind1}///     Const    : {config.PreferConstOverStatic}";
+                    yield return $"{Constants.Ind1}/// Configuration [{Config.ConfigurationSource}]";
+                    yield return $"{Constants.Ind1}///     Namespace       : {Config.NameSpace}";
+                    yield return $"{Constants.Ind1}///     Public          : {Config.GeneratePublic}";
+                    yield return $"{Constants.Ind1}///     Prefix          : {Config.Prefix}";
+                    yield return $"{Constants.Ind1}///     Const           : {Config.PreferConstOverStatic}";
+                    yield return $"{Constants.Ind1}///     ExcludeCoverage : {Config.ExcludeFromCodeCoverage}";
                     yield return $"{Constants.Ind1}/// </summary>";
                 }
 
@@ -83,13 +84,13 @@ namespace Strings.ResourceGenerator.Generators
                 yield return "using System.Collections.Generic;";
                 yield return "using System.Globalization;";
                 yield return "";
-                yield return $"namespace {config.NameSpace}";
+                yield return $"namespace {Config.NameSpace}";
                 yield return "{";
                 foreach (var header in Headers())
                 {
                     yield return header;
                 }
-                yield return Constants.Ind1.ExcludeAttributeIndented(config.ExcludeFromCodeCoverage);
+                yield return Constants.Ind1.ExcludeAttributeIndented(Config.ExcludeFromCodeCoverage);
                 yield return $"{Constants.Ind1}{AccessModifier} static class {Prefix}{Clazz}";
                 yield return $"{Constants.Ind1}{{";
 

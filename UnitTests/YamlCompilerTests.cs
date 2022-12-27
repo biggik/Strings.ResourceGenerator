@@ -1,11 +1,11 @@
 using Strings.ResourceGenerator.Generators.YamlFile;
 using Strings.ResourceGenerator.Models;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
 using YamlDotNet.Serialization;
+using FluentAssertions;
 
 namespace UnitTests
 {
-    public class YamlComplerTests
+    public class YamlCompilerTests
     {
         [Fact]
         public void YamlResourceTest()
@@ -26,8 +26,8 @@ strings:
 
             var generator = YamlProvider.Provide("myfile.yaml", "MyClass", yaml);
             var src = generator.Generate();
-            File.WriteAllText(@"c:\tmp\generated.cs", src);
-            Assert.NotNull(src);
+            File.WriteAllText($@"c:\tmp\generated.{nameof(YamlCompilerTests)}.cs", src);
+            src.Should().NotBeNull();
         }
 
         [Fact]
@@ -68,7 +68,7 @@ strings:
                 .Build();
             var model2 = deserializer.Deserialize<StringsModel>(yaml);
 
-            Assert.True(model.Strings.Count == model2.Strings.Count);
+            model.Strings.Count.Should().Be(model2.Strings.Count);
         }
     }
 }

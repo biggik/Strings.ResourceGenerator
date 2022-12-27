@@ -1,12 +1,10 @@
-using Strings.ResourceGenerator.Generators;
 using Strings.ResourceGenerator.Models;
-using Strings.ResourceGenerator.Generators.Data;
 using Strings.ResourceGenerator.Generators.StringsFile;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using FluentAssertions;
 
 namespace UnitTests
 {
-    public class StringsComplerTests
+    public class StringsCompilerTests
     {
         [Fact]
         public void MuliLocaleResourceTest()
@@ -52,8 +50,8 @@ namespace UnitTests
                 sources.Select(x => (path: x.file, lines: x.lines.Select(x => x))).ToArray());
 
             var src = generator.Generate();
-            File.WriteAllText(@"c:\tmp\generated.cs", src);
-            Assert.NotNull(src);
+            File.WriteAllText($@"c:\tmp\generated.{nameof(StringsCompilerTests)}.cs", src);
+            src.Should().NotBeNull();
         }
     }
 }

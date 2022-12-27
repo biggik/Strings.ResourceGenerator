@@ -173,3 +173,6 @@ Generate generator version into header comments (for clarity)
 
 ## 0.6.4
 Added [ExcludeFromCodeCoverage] attribute to generated classes (configurable)
+
+## 0.6.5
+Fixed configuration and improved unit tests

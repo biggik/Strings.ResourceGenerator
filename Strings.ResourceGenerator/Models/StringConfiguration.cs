@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Strings.ResourceGenerator.Generators;
 using YamlDotNet.Serialization;
 
 namespace Strings.ResourceGenerator.Models
@@ -13,20 +14,20 @@ namespace Strings.ResourceGenerator.Models
         /// <summary>
         /// The namespace to apply to generated code
         /// </summary>
-        [YamlMember(Alias = "namespace", ApplyNamingConventions = false)]
+        [YamlMember(Alias = Constants.Namespace, ApplyNamingConventions = false)]
         public string NameSpace { get; set; }
 
         /// <summary>
         /// Prefix to apply to class name
         /// </summary>
-        [YamlMember(Alias = "prefix", ApplyNamingConventions = false)]
+        [YamlMember(Alias = Constants.Prefix, ApplyNamingConventions = false)]
         public string Prefix { get; set; }
 
         /// <summary>
         /// If true, the generated class will be public, otherwise internal
         /// </summary>
-        [YamlMember(Alias = "public", ApplyNamingConventions = false)]
-        [JsonProperty("public")]
+        [YamlMember(Alias = Constants.Public, ApplyNamingConventions = false)]
+        [JsonProperty(Constants.Public)]
         public bool GeneratePublic { get; set; }
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace Strings.ResourceGenerator.Models
         /// so the value is never constant
         /// </summary>
         [YamlMember(Alias = "prefer_const", ApplyNamingConventions = false)]
-        [JsonProperty("preferConst")]
+        [JsonProperty(Constants.PreferConst)]
         public bool PreferConstOverStatic { get; set; }
 
         /// <summary>
@@ -44,8 +45,12 @@ namespace Strings.ResourceGenerator.Models
         /// added to all generated classes
         /// </summary>
         [YamlMember(Alias = "exclude_coverage", ApplyNamingConventions = false)]
-        [JsonProperty("excludeCoverage")]
+        [JsonProperty(Constants.ExcludeCoverage)]
         public bool ExcludeFromCodeCoverage { get; set; } = true;
+
+        [YamlIgnore]
+        [JsonIgnore]
+        internal string ConfigurationSource { get; set; }
 
         internal static StringConfiguration DefaultConfiguration
             => new()

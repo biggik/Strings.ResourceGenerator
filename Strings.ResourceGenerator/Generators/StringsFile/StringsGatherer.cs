@@ -15,12 +15,14 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
             IEnumerable<LocalizerGenerator> Gather()
             {
                 // Get all .strings files
-                var allStringFiles = context.AdditionalFiles.Where(at => at.Path.EndsWith(".strings"));
+                var allStringFiles = context.AdditionalFiles
+                                            .Where(at => at.Path.EndsWith(".strings"));
 
                 if (allStringFiles.Any())
                 {
                     // Get all strings.config files
-                    var allStringConfigFiles = context.AdditionalFiles.Where(at => at.Path.EndsWith("strings.config"))
+                    var allStringConfigFiles = context.AdditionalFiles
+                        .Where(at => at.Path.EndsWith("strings.config"))
                         .Select(x => (name: Path.GetFileName(x.Path), text: x.GetText()))
                         .ToDictionary(x => x.name, y => y.text.ToString());
 
@@ -82,20 +84,22 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
                                 .Select(x => (x.Split('=')[0], x.Split('=')[1]))
                                 .ToDictionary(x => x.Item1, x => x.Item2);
 
-                return GetConfigFromDictionary(config);
+                return GetConfigFromDictionary(config, "From strings.config");
             }
 
             return StringConfiguration.DefaultConfiguration;
         }
 
-        internal static StringConfiguration GetConfigFromDictionary(Dictionary<string, string> config)
+        internal static StringConfiguration GetConfigFromDictionary(Dictionary<string, string> config, string source)
         {
             return new StringConfiguration
             {
-                NameSpace = config.ContainsKey("namespace") ? config["namespace"] : StringConfiguration.DefaultNamespace,
-                Prefix = config.ContainsKey("prefix") ? config["prefix"] : "",
-                GeneratePublic = config.ContainsKey("public") && config["public"] == "true",
-                PreferConstOverStatic = !config.ContainsKey("preferConst") || config.ContainsKey("preferConst") && config["preferConst"] == "true"
+                NameSpace = config.ContainsKey(Constants.Namespace) ? config[Constants.Namespace] : StringConfiguration.DefaultNamespace,
+                Prefix = config.ContainsKey(Constants.Prefix) ? config[Constants.Prefix] : "",
+                GeneratePublic = config.ContainsKey(Constants.Public) && config[Constants.Public] == "true",
+                PreferConstOverStatic = !config.ContainsKey(Constants.PreferConst) || config.ContainsKey(Constants.PreferConst) && config[Constants.PreferConst] == "true",
+                ExcludeFromCodeCoverage = !config.ContainsKey(Constants.ExcludeCoverage) || config.ContainsKey(Constants.ExcludeCoverage) && config[Constants.ExcludeCoverage] == "true",
+                ConfigurationSource = source
             };
         }
     }

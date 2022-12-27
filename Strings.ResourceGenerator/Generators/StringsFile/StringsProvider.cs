@@ -22,7 +22,6 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
                 var generator = new LocalizerGenerator(config, clazz);
                 foreach (var resource in resources)
                 {
-
                     var locale = Path.GetFileNameWithoutExtension(resource.path)
                                      .Replace($"{clazz}.", "");
                     locale = locale == clazz
@@ -54,7 +53,8 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
                 {
                     config = StringsGatherer.GetConfigFromDictionary(configurationSection.lines
                         .Select(x => (x.Split('=')[0], x.Split('=')[1]))
-                        .ToDictionary(x => x.Item1, x => x.Item2));
+                        .ToDictionary(x => x.Item1, x => x.Item2),
+                        "From strings resource");
                 }
 
                 var model = new StringsModel { Config = config, Strings = resourceStrings.ToList() };

@@ -1,5 +1,6 @@
 ﻿[Configuration]
 public=true
+excludeCoverage=true
 namespace=Strings.ResourceGenerator.Examples.Resources
 
 [Resources]
