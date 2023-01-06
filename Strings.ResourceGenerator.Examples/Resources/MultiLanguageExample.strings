@@ -1,7 +1,7 @@
 ﻿InterpolatedFormatString=This is a string that uses {interpolation} format to add parameters
 InterpolatedWithFormatting={number:n2} is a formatted number with two decimals
 InterpolatedWithOrderingTypeAndFormatting={number:n2@int@1} is a formatted, typed and ordered {description@string@0}, with two decimals
-InterpolatedWithTypeAndFormatting={number:o@DateTime} is a formatted, typed date and time, with roundtrip formatting
+InterpolatedWithTypeAndFormatting={number:o@System.DateTime} is a formatted, typed date and time, with roundtrip formatting
 SimpleString=This is a simple string
 StandardFormatString=This is a string that uses {0} format to add parameters
 StandardWithFormatting={0:n2} is a formatted number with two decimals

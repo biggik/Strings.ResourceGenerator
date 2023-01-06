@@ -176,3 +176,6 @@ Added [ExcludeFromCodeCoverage] attribute to generated classes (configurable)
 
 ## 0.6.5
 Fixed configuration and improved unit tests
+
+## 0.6.6
+Fixed issue with full namespaces in type declaration parameters

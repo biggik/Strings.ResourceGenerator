@@ -25,7 +25,7 @@ namespace Strings.ResourceGenerator.Generators.Parsers
         private static Regex CreateRegex()
         {
             const string rxFormat = @"(?<format>\:[a-zA-Z0-9\-\/.]+)?";   // optional format specifier
-            const string rxType = @"(\@(?<type>[a-zA-Z]+[a-zA-Z0-9]*))?"; // an optional type specifier
+            const string rxType = @"(\@(?<type>[a-zA-Z]+[a-zA-Z0-9.]*))?"; // an optional type specifier
             const string rxOrder = @"(\@(?<order>[0-9]+))?";              // an optional signature order identifier
 
             var parts =
