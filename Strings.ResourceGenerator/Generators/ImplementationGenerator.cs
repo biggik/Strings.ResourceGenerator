@@ -4,7 +4,6 @@ using Strings.ResourceGenerator.Models;
 using Strings.ResourceGenerator.Resources;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
@@ -338,11 +337,10 @@ namespace Strings.ResourceGenerator.Generators
 
         private static string FormatForDoc(string v)
         {
-            return v.Replace("\\", "")
-                    .Replace("<", "&lt;")
-                    .Replace(">", "&gt;")
-                    .Replace("\"", "'")
-                    ;
+            return DocumentationEncoder.Encode(
+                v.Replace("\\", "")
+                 .Replace("\"", "'")
+            );
         }
     }
 }

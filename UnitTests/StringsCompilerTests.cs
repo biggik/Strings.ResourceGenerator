@@ -7,7 +7,7 @@ namespace UnitTests
     public class StringsCompilerTests
     {
         [Fact]
-        public void MuliLocaleResourceTest()
+        public void MulTiLocaleResourceTest()
         {
             var sources = new (string file, string[] lines)[]
             {
@@ -74,38 +74,6 @@ namespace UnitTests
 
             var src = generator.Generate();
             File.WriteAllText($@"c:\tmp\generated.{nameof(StringsCompilerTests)}Multi.cs", src);
-            src.Should().NotBeNull();
-        }
-
-        [Fact]
-        public void MuliLocaleResourceTestaaa()
-        {
-            var sources = new (string file, string[] lines)[]
-            {
-                new (
-                    "Strings.strings",
-                    new string[]
-                    {
-                        "MixOfExcapedAndUnescaped={{Escaped}} and {unescaped}",
-                    }
-                    ),
-                new (
-                    "Strings.is.strings",
-                    new string[]
-                    {
-                        "MixOfExcapedAndUnescaped={{Escaped}} og {unescaped}",
-                    }
-                )
-            };
-
-            var config = new StringConfiguration { NameSpace = "Some.Namespace", GeneratePublic = true };
-            var generator = StringsProvider.Provide(
-                "Strings",
-                config,
-                sources.Select(x => (path: x.file, lines: x.lines.Select(x => x))).ToArray());
-
-            var src = generator.Generate();
-            File.WriteAllText($@"c:\tmp\generated.{nameof(StringsCompilerTests)}.cs", src);
             src.Should().NotBeNull();
         }
     }

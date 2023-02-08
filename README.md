@@ -182,3 +182,6 @@ Fixed issue with full namespaces in type declaration parameters
 
 ## 0.6.7
 Fixed normalization of escaped strings
+
+## 0.6.8
+Encode documentation for valid XML
