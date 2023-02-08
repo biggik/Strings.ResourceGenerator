@@ -56,7 +56,7 @@ namespace Strings.ResourceGenerator.Generators
         public string PublicProperty => parsed.PublicProperty;
 
         /// <summary>
-        /// A represantion of this resource as a public static property
+        /// A representation of this resource as a public static property
         /// </summary>
         public string PublicStaticProperty(bool preferConstOverStatic) 
             => parsed.PublicStaticProperty(preferConstOverStatic);
@@ -72,17 +72,15 @@ namespace Strings.ResourceGenerator.Generators
         public string CleanValue => Value.Replace("\\\\r", "\\r")
                                          .Replace("\\\\n", "\\n")
                                          .Replace("\\\\t", "\\t")
-                                         .Replace("{{", "{")
-                                         .Replace("}}", "}")
                                          ;
 
         /// <summary>
         /// Constructs a new instance of a resource string
         /// </summary>
-        /// <param name="typeParser">The type parser</param>
         /// <param name="locale">The locale this resource belongs to</param>
         /// <param name="key">The key to this resource</param>
         /// <param name="value">The raw value of the resource</param>
+        /// <param name="context">Optional context</param>
         /// <exception cref="ArgumentException">In case of a bad parameter declaration, this exception is thrown</exception>
         /// <exception cref="InvalidDataException">In case of a mix of {0} and {interpolated} parameters, this exception is thrown</exception>
         public ResourceString(string locale, string key, string value, string context = null)

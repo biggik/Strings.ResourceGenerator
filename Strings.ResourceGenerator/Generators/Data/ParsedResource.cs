@@ -61,7 +61,7 @@ namespace Strings.ResourceGenerator.Generators.Data
         public string PublicProperty => property.Replace("<modifier>", "public ");
 
         /// <summary>
-        /// A represantion of this resource as a public static property
+        /// A representation of this resource as a public static property
         /// </summary>
         public string PublicStaticProperty(bool preferConstOverStatic)
             => property.Replace("<modifier>",

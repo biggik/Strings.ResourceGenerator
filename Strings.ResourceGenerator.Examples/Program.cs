@@ -25,6 +25,7 @@ namespace Strings.ResourceGenerator.Examples
 
             Console.WriteLine(new string('-', 60));
             Console.WriteLine(MultiLocaleStrings.SimpleString);
+            Console.WriteLine(MultiLocaleStrings.MixOfExcapedAndUnescaped("value"));
 
             Console.WriteLine(new string('-', 60));
             Console.WriteLine(MultiLanguageExample.InterpolatedFormatString("interpolation"));

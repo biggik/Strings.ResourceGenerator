@@ -3,7 +3,7 @@ config:
   namespace: Strings.ResourceGenerator.Examples.Resources
 strings:
 - key: OneStringWithDouble
-  value: '{{Url}} parameter'
+  value: "{{Url}} parameter"
   context: Context for id 1
 - key: SimplyToDemonstrateNeutralGeneration
   value: This is only here for that purpose

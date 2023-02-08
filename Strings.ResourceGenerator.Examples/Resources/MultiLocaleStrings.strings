@@ -39,3 +39,6 @@ is:{0:n2@int@1} er formuð, týpuð og röðuð tala {1@string@0}, með tveim au
 
 StandardWithTypeAndFormatting={0:o@DateTime} is a formatted, typed date and time, with roundtrip formatting
 is:{0:o@DateTime} er formuð, týpuð dagsetning og tími, með roundtrip formun
+
+MixOfExcapedAndUnescaped={{Escaped}} and {unescaped}
+is:MixOfExcapedAndUnescaped={{Escaped}} og {unescaped}

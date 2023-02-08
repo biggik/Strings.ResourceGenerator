@@ -179,3 +179,6 @@ Fixed configuration and improved unit tests
 
 ## 0.6.6
 Fixed issue with full namespaces in type declaration parameters
+
+## 0.6.7
+Fixed normalization of escaped strings
