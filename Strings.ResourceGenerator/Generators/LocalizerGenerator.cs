@@ -68,11 +68,12 @@ namespace Strings.ResourceGenerator.Generators
                     yield return $"{Constants.Ind1}/// <summary>";
                     yield return $"{Constants.Ind1}/// Generated string accessor class for {Prefix}{Clazz}";
                     yield return $"{Constants.Ind1}/// Configuration [{Config.ConfigurationSource}]";
-                    yield return $"{Constants.Ind1}///     Namespace       : {Config.NameSpace}";
-                    yield return $"{Constants.Ind1}///     Public          : {Config.GeneratePublic}";
-                    yield return $"{Constants.Ind1}///     Prefix          : {Config.Prefix}";
-                    yield return $"{Constants.Ind1}///     Const           : {Config.PreferConstOverStatic}";
-                    yield return $"{Constants.Ind1}///     ExcludeCoverage : {Config.ExcludeFromCodeCoverage}";
+                    yield return $"{Constants.Ind1}///     Namespace              : {Config.NameSpace}";
+                    yield return $"{Constants.Ind1}///     Public                 : {Config.GeneratePublic}";
+                    yield return $"{Constants.Ind1}///     Prefix                 : {Config.Prefix}";
+                    yield return $"{Constants.Ind1}///     Const                  : {Config.PreferConstOverStatic}";
+                    yield return $"{Constants.Ind1}///     ExcludeCoverage        : {Config.ExcludeFromCodeCoverage}";
+                    yield return $"{Constants.Ind1}///     ExcludeCoverageMessage : {Config.ExcludeFromCodeCoverageMessage}";
                     yield return $"{Constants.Ind1}/// </summary>";
                 }
 
@@ -90,7 +91,7 @@ namespace Strings.ResourceGenerator.Generators
                 {
                     yield return header;
                 }
-                yield return Constants.Ind1.ExcludeAttributeIndented(Config.ExcludeFromCodeCoverage);
+                yield return Constants.Ind1.ExcludeAttributeIndented(Config.ExcludeFromCodeCoverage, Config.ExcludeFromCodeCoverageMessage);
                 yield return $"{Constants.Ind1}{AccessModifier} static class {Prefix}{Clazz}";
                 yield return $"{Constants.Ind1}{{";
 

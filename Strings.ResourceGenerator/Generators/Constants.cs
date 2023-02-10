@@ -59,5 +59,10 @@
         /// name of configuration property: Exclude Code Coverage
         /// </summary>
         public const string ExcludeCoverage = "excludeCoverage";
+
+        /// <summary>
+        /// name of configuration property: Exclude Code Coverage Message
+        /// </summary>
+        public const string ExcludeCoverageMessage = "excludeCoverageMessage";
     }
 }

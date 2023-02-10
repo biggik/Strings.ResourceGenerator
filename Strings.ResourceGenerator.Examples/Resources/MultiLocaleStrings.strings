@@ -1,6 +1,7 @@
 ﻿[Configuration]
 public=true
 excludeCoverage=true
+excludeCoverageMessage=Custom exclusion message
 namespace=Strings.ResourceGenerator.Examples.Resources
 
 [Resources]

@@ -99,6 +99,9 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
                 GeneratePublic = config.ContainsKey(Constants.Public) && config[Constants.Public] == "true",
                 PreferConstOverStatic = !config.ContainsKey(Constants.PreferConst) || config.ContainsKey(Constants.PreferConst) && config[Constants.PreferConst] == "true",
                 ExcludeFromCodeCoverage = !config.ContainsKey(Constants.ExcludeCoverage) || config.ContainsKey(Constants.ExcludeCoverage) && config[Constants.ExcludeCoverage] == "true",
+                ExcludeFromCodeCoverageMessage = (config.ContainsKey(Constants.ExcludeCoverageMessage) && !string.IsNullOrWhiteSpace(config[Constants.ExcludeCoverageMessage]))
+                    ? config[Constants.ExcludeCoverageMessage]
+                    : StringConfiguration.DefaultExclusionJustification,
                 ConfigurationSource = source
             };
         }

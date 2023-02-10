@@ -10,6 +10,7 @@ namespace Strings.ResourceGenerator.Models
     public class StringConfiguration
     {
         public const string DefaultNamespace = "Strings.Resources";
+        public const string DefaultExclusionJustification = "Auto-generated from string resources";
 
         /// <summary>
         /// The namespace to apply to generated code
@@ -47,6 +48,14 @@ namespace Strings.ResourceGenerator.Models
         [YamlMember(Alias = "exclude_coverage", ApplyNamingConventions = false)]
         [JsonProperty(Constants.ExcludeCoverage)]
         public bool ExcludeFromCodeCoverage { get; set; } = true;
+
+        /// <summary>
+        /// If ExcludeFromCodeCoverage is set then this property can override the message
+        /// passed to the attribute generated
+        /// </summary>
+        [YamlMember(Alias = "exclude_coverage_message", ApplyNamingConventions = false)]
+        [JsonProperty(Constants.ExcludeCoverageMessage)]
+        public string ExcludeFromCodeCoverageMessage { get; set; } = DefaultExclusionJustification;
 
         [YamlIgnore]
         [JsonIgnore]

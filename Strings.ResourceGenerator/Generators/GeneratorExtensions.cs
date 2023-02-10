@@ -69,19 +69,22 @@ namespace Strings.ResourceGenerator.Generators
                              .ToList();
         }
 
-        public static void AddExcludeAttribute(this StringBuilder buf, bool apply, string indent)
+        public static void AddExcludeAttribute(this StringBuilder buf, bool apply, string message, string indent)
         {
             if (apply)
             {
-                buf.AppendLine(indent.ExcludeAttributeIndented(apply));
+                buf.AppendLine(indent.ExcludeAttributeIndented(apply, message));
             }
         }
 
-        public static string ExcludeAttributeIndented(this string indent, bool apply)
+        public static string ExcludeAttributeIndented(this string indent, bool apply, string message)
         {
             if (apply)
             {
-                return $"{indent}[{typeof(ExcludeFromCodeCoverageAttribute).FullName.Replace("Attribute", "")}]";
+                return $"{indent}[{typeof(ExcludeFromCodeCoverageAttribute).FullName
+                    .Replace("Attribute", "")}]"
+                    .Replace("]", $"(Justification = \"{message}\")]")
+                    ;
             }
             return null;
         }

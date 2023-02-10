@@ -138,13 +138,13 @@ namespace Strings.ResourceGenerator.Generators
             {
                 constructor = $"protected GeneratedLocalizerFor{generator.Data.ClassName}Base()";
                 buf.AppendLine($"{indent}#region GeneratedLocalizerFor{generator.Data.ClassName}Base");
-                buf.AddExcludeAttribute(generator.Data.Config.ExcludeFromCodeCoverage, indent);
+                buf.AddExcludeAttribute(generator.Data.Config.ExcludeFromCodeCoverage, generator.Data.Config.ExcludeFromCodeCoverageMessage, indent);
                 buf.AppendLine($"{indent}private abstract class GeneratedLocalizerFor{generator.Data.ClassName}Base");
             }
             else if (level == Level.Implementation)
             {
                 buf.AppendLine($"{indent}#region {generator.GeneratedClassName()}");
-                buf.AddExcludeAttribute(generator.Data.Config.ExcludeFromCodeCoverage, indent);
+                buf.AddExcludeAttribute(generator.Data.Config.ExcludeFromCodeCoverage, generator.Data.Config.ExcludeFromCodeCoverageMessage, indent);
                 buf.AppendLine($"{indent}private class {generator.GeneratedClassName()} : GeneratedLocalizerFor{generator.Data.ClassName}Base, IGeneratedLocalizerFor{generator.Data.ClassName}");
             }
             else if (level == Level.StaticAccessors)

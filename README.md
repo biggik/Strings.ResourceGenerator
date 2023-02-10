@@ -188,3 +188,6 @@ Encode documentation for valid XML
 
 ## 0.6.9
 Re-fixed normalization. Code requires refactoring from seriously old implementation that mixes responsibilities. But for now ...
+
+## 0.6.10
+Set, and allow to configure, a custom Justification message for ExcludeFromCodeCoverage attributes
