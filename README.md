@@ -185,3 +185,6 @@ Fixed normalization of escaped strings
 
 ## 0.6.8
 Encode documentation for valid XML
+
+## 0.6.9
+Re-fixed normalization. Code requires refactoring from seriously old implementation that mixes responsibilities. But for now ...

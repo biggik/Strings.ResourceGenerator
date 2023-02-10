@@ -237,7 +237,7 @@ namespace Strings.ResourceGenerator.Generators
                 buf.AppendLine($"{indent}{Constants.Ind2}{{");
                 foreach (var res in generator.Data.Resources)
                 {
-                    buf.AppendLine($"{indent}{Constants.Ind3}{{ \"{res.Key}\", \"{res.CleanValue}\" }},");
+                    buf.AppendLine($"{indent}{Constants.Ind3}{{ \"{res.Key}\", \"{res.CleanValueImplementation}\" }},");
                 }
                 buf.AppendLine($"{indent}{Constants.Ind2}}};");
                 if (level == Level.Implementation)
@@ -258,7 +258,7 @@ namespace Strings.ResourceGenerator.Generators
                     if (level == Level.Interface)
                     {
                         var fullDecl = $"{Constants.Ind1}{res.InterfaceDeclaration}";
-                        buf.AppendLine(Documentation(fullDecl, res.Context, res.CleanValue));
+                        buf.AppendLine(Documentation(fullDecl, res.Context, res.CleanValueNonImplementation));
                         buf.AppendLine(fullDecl);
                     }
                     else if (level == Level.Implementation || level == Level.StaticAccessors)
@@ -276,7 +276,7 @@ namespace Strings.ResourceGenerator.Generators
 
                         if (withDocumentation)
                         {
-                            buf.AppendLine(Documentation(fullDecl, res.Context, res.CleanValue));
+                            buf.AppendLine(Documentation(fullDecl, res.Context, res.CleanValueNonImplementation));
                         }
 
                         buf.AppendLine(fullDecl);

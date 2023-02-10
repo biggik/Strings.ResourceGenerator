@@ -189,7 +189,7 @@ namespace Strings.ResourceGenerator.Generators
                             foreach (var generator in generators.Values)
                             {
                                 var subRes = generator.Data.Resources.FirstOrDefault(x => x.Key == res.Key);
-                                yield return $"{generator.Data.Locale}: {subRes?.CleanValue ?? "Missing documentation"}";
+                                yield return $"{generator.Data.Locale}: {subRes?.CleanValueNonImplementation ?? "Missing documentation"}";
                             }
                         }
 

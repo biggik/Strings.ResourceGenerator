@@ -10,26 +10,6 @@ namespace Strings.ResourceGenerator.Generators.Data
     /// </summary>
     internal class ParsedResource
     {
-        /// <summary>
-        /// Parameters to the resource string
-        /// </summary>
-        public List<ResourceStringParameter> Parameters { get; } = new List<ResourceStringParameter>();
-
-        /// <summary>
-        /// The locale this resource belongs to
-        /// </summary>
-        public string Locale { get; }
-
-        /// <summary>
-        /// The resource key - i.e. the name of the resource string
-        /// </summary>
-        public string Key { get; }
-
-        /// <summary>
-        /// The resource string
-        /// </summary>
-        public string Value { get; }
-
         private readonly string property;
         private readonly string staticGetter;
         private readonly string getter;
@@ -65,13 +45,13 @@ namespace Strings.ResourceGenerator.Generators.Data
         /// </summary>
         public string PublicStaticProperty(bool preferConstOverStatic)
             => property.Replace("<modifier>",
-                preferConstOverStatic? "public const " : "public static ");
+                preferConstOverStatic ? "public const " : "public static ");
 
         /// <summary>
         /// A representation of this resource as a class line
         /// </summary>
         public string ClassLine(bool preferConstOverStatic) 
-            => getter.Replace("<string>", resourceString.CleanValue)
+            => getter.Replace("<string>", resourceString.CleanValueImplementation)
                      .Replace("<getter_operator>", preferConstOverStatic ? "=" : "=>");
 
         /// <summary>

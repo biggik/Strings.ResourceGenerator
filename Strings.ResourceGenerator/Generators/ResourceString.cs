@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
 using Strings.ResourceGenerator.Generators.Data;
 using Strings.ResourceGenerator.Generators.Parsers;
@@ -55,6 +55,8 @@ namespace Strings.ResourceGenerator.Generators
         /// </summary>
         public string PublicProperty => parsed.PublicProperty;
 
+        internal List<ResourceStringParameter> Parameters => parser.Parameters;
+
         /// <summary>
         /// A representation of this resource as a public static property
         /// </summary>
@@ -69,10 +71,31 @@ namespace Strings.ResourceGenerator.Generators
         /// <summary>
         /// The value cleaned of any unnecessary escapes
         /// </summary>
-        public string CleanValue => Value.Replace("\\\\r", "\\r")
-                                         .Replace("\\\\n", "\\n")
-                                         .Replace("\\\\t", "\\t")
-                                         ;
+        public string CleanValueNonImplementation 
+            => Value.Replace("\\\\r", "\\r")
+                    .Replace("\\\\n", "\\n")
+                    .Replace("\\\\t", "\\t")
+                    ;
+
+        /// <summary>
+        /// The value cleaned of any unnecessary escapes
+        /// </summary>
+        public string CleanValueImplementation
+        {
+            get
+            {
+                var res = CleanValueNonImplementation;
+
+                if (parser.Parameters.Count == 0)
+                {
+                    res = res.Replace("{{", "{")
+                             .Replace("}}", "}")
+                             ;
+                }
+
+                return res;
+            }
+        }
 
         /// <summary>
         /// Constructs a new instance of a resource string

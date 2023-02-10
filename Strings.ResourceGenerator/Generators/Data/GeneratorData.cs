@@ -5,7 +5,6 @@ namespace Strings.ResourceGenerator.Generators.Data
 {
     internal record GeneratorData
     {
-
         public List<ResourceString> Resources { get; set; }
 
         public string SourceFile { get; set; }
