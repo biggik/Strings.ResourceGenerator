@@ -1,0 +1,16 @@
+﻿[Configuration]
+public=true
+namespace=Strings.ResourceGenerator.Examples.Resources
+
+[Resources]
+/* Example of simple string */
+SimpleString=This is a simple string without parameters
+
+/* Example of multi-line raw string */
+MultiLineRaw="""
+    Here is the first line of a multi-line raw string\n
+    It doesn't contain newlines lines, but you can specifically embed into the string as shown
+    """
+
+/* And finally another simple string */
+SimpleInterpolationString=Interpolating {value} into string

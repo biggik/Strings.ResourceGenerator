@@ -41,6 +41,11 @@ namespace Strings.ResourceGenerator.Examples
             // Also accessible via locale accessors
             Console.WriteLine(MultiLanguageExample.IS.SimpleString);
             Console.WriteLine(MultiLanguageExample.Neutral.SimpleString);
+
+            // Messages
+            Console.WriteLine(Messages.SimpleString);
+            Console.WriteLine(Messages.MultiLineRaw);
+            Console.WriteLine(Messages.SimpleInterpolationString("interpolated"));
         }
     }
 }

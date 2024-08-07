@@ -191,3 +191,6 @@ Re-fixed normalization. Code requires refactoring from seriously old implementat
 
 ## 0.6.10
 Set, and allow to configure, a custom Justification message for ExcludeFromCodeCoverage attributes
+
+## 0.6.11
+Add rudimentary support for multi-line raw strings

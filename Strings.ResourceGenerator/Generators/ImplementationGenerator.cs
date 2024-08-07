@@ -272,7 +272,7 @@ namespace Strings.ResourceGenerator.Generators
                         var extraIndent = level == Level.Implementation ? Constants.Ind1 : "";
                         var impl = res.ClassLine(preferConst);
 
-                        var fullDecl = extraIndent + Splitter.SplitDeclAndImpl(decl, impl, extraIndent);
+                        var fullDecl = extraIndent + Splitter.SplitDeclAndImpl(decl, impl);
 
                         if (withDocumentation)
                         {
@@ -332,7 +332,7 @@ namespace Strings.ResourceGenerator.Generators
         /// <returns>A documented declaration</returns>
         public static string Documentation(string declaration, string context, params string[] values)
         {
-            return string.Join(Environment.NewLine, DocumentationLines(declaration, context, values));
+            return string.Join("\n", DocumentationLines(declaration, context, values));
         }
 
         private static string FormatForDoc(string v)

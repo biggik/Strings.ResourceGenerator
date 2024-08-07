@@ -1,5 +1,6 @@
 ﻿using Strings.ResourceGenerator.Generators.Data;
 using Strings.ResourceGenerator.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -100,7 +101,7 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
         /// </summary>
         /// <param name="lines"></param>
         /// <returns></returns>
-        private static IEnumerable<ResourceStringModel> ToResourceStrings(IEnumerable<string> lines)
+        private static IEnumerable<ResourceStringModel> ToResourceStrings(string[] lines)
         {
             bool inComment = false;
             var current = new ResourceStringModel();
@@ -110,8 +111,9 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
                 return current.Key != null;
             }
 
-            foreach (var line in lines)
+            for (int i = 0; i < lines.Length; i++)
             {
+                var line = lines[i];
                 if (line.Trim().StartsWith("/*"))
                 {
                     if (CurrentIsValid())
@@ -154,7 +156,6 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
                     var key = match.Groups["key"];
                     var value = match.Groups["value"];
 
-
                     var resourceKey = key.Success ? key.Value : null;
                     // If locale is specified, and we have a current entry, then add the value for the same key 
                     if (CurrentIsValid() && !key.Success && locale.Success)
@@ -165,6 +166,35 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
                     if (resourceKey != null && value.Success)
                     {
                         // This means we have an identified resource
+
+                        var stringValue = value.Value;
+
+                        if (stringValue.Trim() == StringsGenerator.RawString)
+                        {
+                            // Multi-line raw string
+                            stringValue = "";
+                            var j = i + 1;
+                            while (j < lines.Length && lines[j].Trim() != StringsGenerator.RawString)
+                            {
+                                stringValue += lines[j].Trim();
+                                if (!stringValue.EndsWith("\\n"))
+                                {
+                                    stringValue += " ";
+                                }
+                                j++;
+                            }
+
+                            if (lines[j].Trim() == StringsGenerator.RawString)
+                            {
+                                // found the end, use it
+                                i = j;
+                                stringValue = stringValue.Trim();
+                            }
+                            else
+                            {
+                                stringValue = "ERROR: Missing closing \"\"\" for multi-line string";
+                            }
+                        }
 
                         if (CurrentIsValid() && resourceKey != current.Key)
                         {
@@ -180,7 +210,7 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
                         }
 
                         current.Values ??= new List<ResourceStringValue>();
-                        current.Values.Add(new ResourceStringValue { Locale = locale.Success ? locale.Value : null, Value = value.Value });
+                        current.Values.Add(new ResourceStringValue { Locale = locale.Success ? locale.Value : null, Value = stringValue });
                     }
                 }
             }

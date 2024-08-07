@@ -43,13 +43,11 @@ namespace Strings.ResourceGenerator.Generators
         /// <summary>
         /// Generate resource classes for the localizer
         /// </summary>
-        /// <param name="nameSpace">The namespace to generate the localizer in</param>
-        /// <param name="clazz">The class name for the localizer</param>
         /// <returns>The text for the string localizer</returns>
         /// <exception cref="StringGeneratorException"></exception>
         public string Generate()
         {
-            return string.Join(Environment.NewLine, Lines().Where(x => x != null));
+            return string.Join("\n", Lines().Where(x => x != null));
 
             IEnumerable<string> Lines()
             {

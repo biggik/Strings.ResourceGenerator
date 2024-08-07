@@ -9,6 +9,8 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
 {
     internal class StringsGenerator : IGenerator
     {
+        internal const string RawString = "\"\"\"";
+
         public GeneratorData Data { get; }
 
         /// <summary>
@@ -32,20 +34,21 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
         public StringsGenerator(GeneratorData data, IEnumerable<string> lines)
         {
             Data = data;
-            Data.Resources = InitializeResources(lines);
+            Data.Resources = InitializeResources(lines.ToList());
         }
 
-        private List<ResourceString> InitializeResources(IEnumerable<string> lines)
+        private List<ResourceString> InitializeResources(IReadOnlyList<string> lines)
         {
             return (from r in GetEntries(lines).OrderBy(x => x.Key).ToList()
                     select new ResourceString(Data.Locale, r.Key, r.Value)
                    ).ToList();
         }
 
-        private IEnumerable<KeyValuePair<string, string>> GetEntries(IEnumerable<string> lines)
+        private IEnumerable<KeyValuePair<string, string>> GetEntries(IReadOnlyList<string> lines)
         {
-            foreach (var line in lines)
+            for (int i = 0; i < lines.Count; i++)
             {
+                var line = lines[i];
                 if (string.IsNullOrWhiteSpace(line))
                 {
                     continue;
@@ -63,6 +66,32 @@ namespace Strings.ResourceGenerator.Generators.StringsFile
                     var pos = line.IndexOf("=");
                     key = line.Substring(0, pos).Trim();
                     value = line.Substring(pos + 1).Trim();
+                    if (value.Trim() == RawString)
+                    {
+                        // Multi-line raw string
+                        value = "";
+                        var j = i + 1;
+                        while (j < lines.Count && lines[j].Trim() != RawString)
+                        {
+                            value += lines[j].Trim();
+                            if (!value.EndsWith("\\n"))
+                            {
+                                value += " ";
+                            }
+                            j++;
+                        }
+
+                        if (lines[j].Trim() == RawString)
+                        {
+                            // found the end, use it
+                            i = j;
+                            value = value.Trim();
+                        }
+                        else
+                        {
+                            value = "ERROR: Missing closing \"\"\" for multi-line string";
+                        }
+                    }
                 }
                 catch (ArgumentOutOfRangeException)
                 {

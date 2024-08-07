@@ -25,7 +25,7 @@ namespace Strings.ResourceGenerator.Generators.Data
             {
                 var decl = property.Replace("<modifier>", "public static ");
 
-                return Splitter.SplitDeclAndImpl(decl, staticGetter, "               ");
+                return Splitter.SplitDeclAndImpl(decl, staticGetter);
                 // TODO: what is the difference to PublicStaticProperty?
             }
         }
