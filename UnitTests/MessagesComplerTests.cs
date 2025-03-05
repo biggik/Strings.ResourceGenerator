@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Strings.ResourceGenerator.Generators.StringsFile;
 using Strings.ResourceGenerator.Models;
+using UnitTests.Utils;
 
 namespace UnitTests
 {
@@ -23,7 +24,9 @@ namespace UnitTests
             generator.Config.ExcludeFromCodeCoverage.Should().BeTrue();
 
             var src = generator.Generate();
-            File.WriteAllText($@"c:\tmp\generated.{nameof(MessagesCompilerTests)}.cs", src);
+#if DUMPGENERATION
+            DebugDump.Dump(nameof(MessagesCompilerTests), src);
+#endif
             src.Should().NotBeNull();
         }
     }

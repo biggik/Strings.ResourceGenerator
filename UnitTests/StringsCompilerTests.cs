@@ -1,6 +1,7 @@
 using Strings.ResourceGenerator.Models;
 using Strings.ResourceGenerator.Generators.StringsFile;
 using FluentAssertions;
+using UnitTests.Utils;
 
 namespace UnitTests
 {
@@ -52,7 +53,9 @@ namespace UnitTests
                 sources.Select(x => (path: x.file, lines: x.lines.Select(x => x))).ToArray());
 
             var src = generator.Generate();
-            File.WriteAllText($@"c:\tmp\generated.{nameof(StringsCompilerTests)}.cs", src);
+#if DUMPGENERATION
+            DebugDump.Dump(nameof(StringsCompilerTests), src);
+#endif
             src.Should().NotBeNull();
         }
 
@@ -73,7 +76,9 @@ namespace UnitTests
             generator.Config.ExcludeFromCodeCoverage.Should().BeTrue();
 
             var src = generator.Generate();
-            File.WriteAllText($@"c:\tmp\generated.{nameof(StringsCompilerTests)}Multi.cs", src);
+#if DUMPGENERATION
+            DebugDump.Dump($"{nameof(StringsCompilerTests)}Multi", src);
+#endif
             src.Should().NotBeNull();
         }
     }

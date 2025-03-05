@@ -2,6 +2,7 @@ using Strings.ResourceGenerator.Generators.YamlFile;
 using Strings.ResourceGenerator.Models;
 using YamlDotNet.Serialization;
 using FluentAssertions;
+using UnitTests.Utils;
 
 namespace UnitTests
 {
@@ -26,7 +27,9 @@ strings:
 
             var generator = YamlProvider.Provide("myfile.yaml", "MyClass", yaml);
             var src = generator.Generate();
-            File.WriteAllText($@"c:\tmp\generated.{nameof(YamlCompilerTests)}.cs", src);
+#if DUMPGENERATION
+            DebugDump.Dump(nameof(YamlCompilerTests), src);
+#endif
             src.Should().NotBeNull();
         }
 
@@ -60,8 +63,9 @@ strings:
 
             var serializer = new SerializerBuilder().Build();
             var yaml = serializer.Serialize(model);
-            File.WriteAllText(@"c:\tmp\model.yaml", yaml);
-
+#if DUMPGENERATION
+            DebugDump.Dump(nameof(YamlCompilerTests), yaml, ".yaml");
+#endif
             var deserializer = new DeserializerBuilder()
                 //.WithNamingConvention(CamelCaseNamingConvention.Instance)
                 //.WithNamingConvention(UnderscoredNamingConvention.Instance)  // see height_in_inches in sample yml

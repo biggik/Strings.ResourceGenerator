@@ -3,12 +3,28 @@ using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.CodeAnalysis.Text;
+using System.Threading;
 
 namespace Strings.ResourceGenerator.Generators.StringsFile
 {
     internal static class StringsGatherer
     {
-        public static IReadOnlyCollection<LocalizerGenerator> Gather(GeneratorExecutionContext context)
+        public static bool IsMatch(string filePath) => filePath.EndsWith(".strings", System.StringComparison.OrdinalIgnoreCase);
+
+        public static LocalizerGenerator Gather(AdditionalText text)
+        {
+            var path = new DirectoryInfo(Path.GetDirectoryName(text.Path));
+            var allStringConfigFiles = path.GetFiles("*strings.config")
+                .Where(at => at.Name.EndsWith("strings.config"))
+                .Select(x => (name: Path.GetFileName(x.Name), text: x.GetText()))
+                .ToDictionary(x => x.name, y => y.text.ToString());
+
+            var source = text.GetText(cancellationToken);
+
+        }
+
+        public static IReadOnlyCollection<LocalizerGenerator> Gather(IncrementalGeneratorInitializationContext context)
         {
             return Gather().ToList();
 

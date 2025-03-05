@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Strings.ResourceGenerator.Generators.JsonFile;
+using UnitTests.Utils;
 
 namespace UnitTests
 {
@@ -11,7 +12,9 @@ namespace UnitTests
             var json = File.ReadAllText(@"..\..\..\..\Strings.ResourceGenerator.Examples\Resources\JsonExample.json");
             var generator = JsonProvider.Provide("json.json", "MyClass", json);
             var src = generator.Generate();
-            File.WriteAllText($@"c:\tmp\generated.{nameof(JsonCompilerTests)}.cs", src);
+#if DUMPGENERATION
+            DebugDump.Dump(nameof(JsonCompilerTests), src);
+#endif
             src.Should().NotBeNull();
         }
     }

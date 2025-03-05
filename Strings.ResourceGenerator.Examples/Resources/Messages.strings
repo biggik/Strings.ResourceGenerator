@@ -12,5 +12,7 @@ MultiLineRaw="""
     It doesn't contain newlines lines, but you can specifically embed into the string as shown
     """
 
+DateFormatting=The date is {date:yyyy-MM-dd@DateTime}
+
 /* And finally another simple string */
 SimpleInterpolationString=Interpolating {value} into string
