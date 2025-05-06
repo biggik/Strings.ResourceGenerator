@@ -1,16 +1,16 @@
+using FluentAssertions;
 using Strings.ResourceGenerator.Generators.YamlFile;
 using Strings.ResourceGenerator.Models;
 using YamlDotNet.Serialization;
-using FluentAssertions;
 
-namespace UnitTests
+namespace UnitTests;
+
+public class YamlCompilerTests
 {
-    public class YamlCompilerTests
+    [Fact]
+    public void YamlResourceTest()
     {
-        [Fact]
-        public void YamlResourceTest()
-        {
-            var yaml = @"config:
+        var yaml = @"config:
   namespace: some.namespace
   prefix: ah 
   public: false
@@ -24,51 +24,50 @@ strings:
   context: Context for id 1
 ";
 
-            var generator = YamlProvider.Provide("myfile.yaml", "MyClass", yaml);
-            var src = generator.Generate();
-            File.WriteAllText($@"c:\tmp\generated.{nameof(YamlCompilerTests)}.cs", src);
-            src.Should().NotBeNull();
-        }
+        var generator = YamlProvider.Provide("myfile.yaml", "MyClass", yaml);
+        var src = generator.Generate();
+        File.WriteAllText($@"c:\tmp\generated.{nameof(YamlCompilerTests)}.cs", src);
+        src.Should().NotBeNull();
+    }
 
-        [Fact]
-        public void Roundtrip_SerializeToYaml()
+    [Fact]
+    public void Roundtrip_SerializeToYaml()
+    {
+        var model = new StringsModel
         {
-            var model = new StringsModel
+            Config = new StringConfiguration
             {
-                Config = new StringConfiguration
+                Prefix = null,
+                GeneratePublic = true,
+                NameSpace = "Some.Namespace",
+                PreferConstOverStatic = false
+            },
+            Strings =
+            [
+                new ResourceStringModel
                 {
-                    Prefix = null,
-                    GeneratePublic = true,
-                    NameSpace = "Some.Namespace",
-                    PreferConstOverStatic = false
+                    Key = "FirstKey",
+                    Value = "FirstValue {{URL}}",
+                    Context = "Context for first value"
                 },
-                Strings = new List<ResourceStringModel>
+                new ResourceStringModel
                 {
-                    new ResourceStringModel
-                    {
-                        Key = "FirstKey",
-                        Value = "FirstValue {{URL}}",
-                        Context = "Context for first value"
-                    },
-                    new ResourceStringModel
-                    {
-                        Key = "SecondKey",
-                        Value = "{{Url}} SecondValue"
-                    }
+                    Key = "SecondKey",
+                    Value = "{{Url}} SecondValue"
                 }
-            };
+            ]
+        };
 
-            var serializer = new SerializerBuilder().Build();
-            var yaml = serializer.Serialize(model);
-            File.WriteAllText(@"c:\tmp\model.yaml", yaml);
+        var serializer = new SerializerBuilder().Build();
+        var yaml = serializer.Serialize(model);
+        File.WriteAllText(@"c:\tmp\model.yaml", yaml);
 
-            var deserializer = new DeserializerBuilder()
-                //.WithNamingConvention(CamelCaseNamingConvention.Instance)
-                //.WithNamingConvention(UnderscoredNamingConvention.Instance)  // see height_in_inches in sample yml
-                .Build();
-            var model2 = deserializer.Deserialize<StringsModel>(yaml);
+        var deserializer = new DeserializerBuilder()
+            //.WithNamingConvention(CamelCaseNamingConvention.Instance)
+            //.WithNamingConvention(UnderscoredNamingConvention.Instance)  // see height_in_inches in sample yml
+            .Build();
+        var model2 = deserializer.Deserialize<StringsModel>(yaml);
 
-            model.Strings.Count.Should().Be(model2.Strings.Count);
-        }
+        model.Strings.Count.Should().Be(model2.Strings.Count);
     }
 }
