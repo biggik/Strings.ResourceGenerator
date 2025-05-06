@@ -3,10 +3,9 @@ using Microsoft.CodeAnalysis.Text;
 using System.Text;
 using Strings.ResourceGenerator.Exceptions;
 using Strings.ResourceGenerator.Generators.StringsFile;
-using System.Diagnostics;
 using Strings.ResourceGenerator.Generators.YamlFile;
-using System.Linq;
 using Strings.ResourceGenerator.Generators.JsonFile;
+using System.Linq;
 
 namespace Strings.ResourceGenerator
 {
@@ -14,30 +13,38 @@ namespace Strings.ResourceGenerator
     /// A code generator that looks for resource files and generates classes for them
     /// </summary>
     [Generator]
-    public class ResourceGenerator : ISourceGenerator
+    public class ResourceGenerator : IIncrementalGenerator
     {
-        /// <inheritdoc />
-        public void Initialize(GeneratorInitializationContext context)
+        public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-        }
+            // Combine Compilation and AdditionalText files into a single pipeline
+            var resourceGenerators = context.AdditionalTextsProvider.Collect()
+                .SelectMany((additionalFiles, cancellationToken) =>
+                {
+                    var stringsGenerators = StringsGatherer.Gather(additionalFiles, cancellationToken);
+                    var yamlGenerators = YamlGatherer.Gather(additionalFiles, cancellationToken);
+                    var jsonGenerators = JsonGatherer.Gather(additionalFiles, cancellationToken);
 
-        /// <inheritdoc />
-        public void Execute(GeneratorExecutionContext context)
-        {
-            var stringsGenerators = StringsGatherer.Gather(context);
-            var yamlGenerators = YamlGatherer.Gather(context);
-            var jsonGenerators = JsonGatherer.Gather(context);
+                    return stringsGenerators
+                        .Concat(yamlGenerators)
+                        .Concat(jsonGenerators);
+                });
 
-            foreach (var generator in Enumerable.Concat(Enumerable.Concat(stringsGenerators, yamlGenerators), jsonGenerators))
-            { 
+            // Register the source output
+            context.RegisterSourceOutput(resourceGenerators, (context, generator) =>
+            {
                 try
                 {
+                    // Generate the source code
                     var generated = generator.Generate();
                     var sourceText = SourceText.From(generated, Encoding.UTF8);
+
+                    // Add the generated source
                     context.AddSource($"{generator.Clazz}.g.cs", sourceText);
                 }
                 catch (StringGeneratorException sge)
                 {
+                    // Report diagnostics for any errors
                     var rule = new DiagnosticDescriptor(
                         "SG0001",
                         "Error during string resource generation",
@@ -52,7 +59,7 @@ namespace Strings.ResourceGenerator
                         context.ReportDiagnostic(Diagnostic.Create(rule, Location.None, error));
                     }
                 }
-            }
+            });
         }
     }
 }

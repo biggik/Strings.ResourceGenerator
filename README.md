@@ -194,3 +194,6 @@ Set, and allow to configure, a custom Justification message for ExcludeFromCodeC
 
 ## 0.6.11
 Add rudimentary support for multi-line raw strings
+
+## 0.7.0
+Refactored to use IIncrementalGenerator instead of ISourceGenerator on request https://github.com/biggik/Strings.ResourceGenerator/issues/1
