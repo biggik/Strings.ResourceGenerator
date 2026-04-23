@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Shouldly;
 using Strings.ResourceGenerator.Generators.StringsFile;
 using Strings.ResourceGenerator.Models;
 
@@ -31,15 +31,15 @@ public class StringsCompilerTests
                 "Strings.is.strings",
                 new string[]
                 {
-                    "InterpolatedFormatString=Şetta er strengur sem notar {interpolation} formun til ağ bæta viğ færibreytum",
-                    "InterpolatedWithFormatting={number:n2} er formuğ tala meğ tveim aukastöfum",
-                    "InterpolatedWithOrderingTypeAndFormatting={number:n2@int@1} er formuğ, tıpuğ og röğuğ {description@string@0}, meğ tveim aukastöfum",
-                    "InterpolatedWithTypeAndFormatting={number:o@DateTime} er formuğ, tıpuğ dagsetning, meğ roundtrip formun",
-                    "SimpleString=Şetta er einfaldur strengur",
-                    "StandardFormatString=Şetta er strengur sem notar {0} formun til ağ bæta viğ færibreytum",
-                    "StandardWithFormatting={0:n2} er formuğ tala meğ tveim aukastöfum",
-                    "StandardWithOrderingTypeAndFormatting={0:n2@int@1} er formuğ, tıpuğ og röğuğ {1@string@0}, meğ tveim aukastöfum",
-                    "StandardWithTypeAndFormatting={0:o@DateTime} er formuğ, tıpuğ dagsetning, meğ roundtrip formun",
+                    "InterpolatedFormatString=etta er strengur sem notar {interpolation} formun til a bta vi fribreytum",
+                    "InterpolatedWithFormatting={number:n2} er formu tala me tveim aukastfum",
+                    "InterpolatedWithOrderingTypeAndFormatting={number:n2@int@1} er formu, tpu og ru {description@string@0}, me tveim aukastfum",
+                    "InterpolatedWithTypeAndFormatting={number:o@DateTime} er formu, tpu dagsetning, me roundtrip formun",
+                    "SimpleString=etta er einfaldur strengur",
+                    "StandardFormatString=etta er strengur sem notar {0} formun til a bta vi fribreytum",
+                    "StandardWithFormatting={0:n2} er formu tala me tveim aukastfum",
+                    "StandardWithOrderingTypeAndFormatting={0:n2@int@1} er formu, tpu og ru {1@string@0}, me tveim aukastfum",
+                    "StandardWithTypeAndFormatting={0:o@DateTime} er formu, tpu dagsetning, me roundtrip formun",
                     "MixOfExcapedAndUnescaped={{Escaped}} og {unescaped}",
                 }
             )
@@ -53,7 +53,7 @@ public class StringsCompilerTests
 
         var src = generator.Generate();
         File.WriteAllText($@"c:\tmp\generated.{nameof(StringsCompilerTests)}.cs", src);
-        src.Should().NotBeNull();
+        src.ShouldNotBeNull();
     }
 
     [Fact]
@@ -68,12 +68,12 @@ public class StringsCompilerTests
             config,
             ("MultiLanguageExample.strings", lines));
 
-        generator.Config.GeneratePublic.Should().BeTrue();
-        generator.Config.NameSpace.Should().Be("Some.Namespace");
-        generator.Config.ExcludeFromCodeCoverage.Should().BeTrue();
+        generator.Config.GeneratePublic.ShouldBeTrue();
+        generator.Config.NameSpace.ShouldBe("Some.Namespace");
+        generator.Config.ExcludeFromCodeCoverage.ShouldBeTrue();
 
         var src = generator.Generate();
         File.WriteAllText($@"c:\tmp\generated.{nameof(StringsCompilerTests)}Multi.cs", src);
-        src.Should().NotBeNull();
+        src.ShouldNotBeNull();
     }
 }

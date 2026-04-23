@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Shouldly;
 using Strings.ResourceGenerator.Generators.YamlFile;
 using Strings.ResourceGenerator.Models;
 using YamlDotNet.Serialization;
@@ -27,7 +27,7 @@ strings:
         var generator = YamlProvider.Provide("myfile.yaml", "MyClass", yaml);
         var src = generator.Generate();
         File.WriteAllText($@"c:\tmp\generated.{nameof(YamlCompilerTests)}.cs", src);
-        src.Should().NotBeNull();
+        src.ShouldNotBeNull();
     }
 
     [Fact]
@@ -68,6 +68,14 @@ strings:
             .Build();
         var model2 = deserializer.Deserialize<StringsModel>(yaml);
 
-        model.Strings.Count.Should().Be(model2.Strings.Count);
+        model2.ShouldNotBeNull();
+        model2.Strings.Count.ShouldBe(model.Strings.Count);
+
+        var byKey = model.Strings.ToDictionary(s => s.Key);
+        foreach (var s in model2.Strings)
+        {
+            byKey[s.Key].Value.ShouldBe(s.Value);
+            byKey[s.Key].Context.ShouldBe(s.Context);
+        }
     }
 }

@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="LICENSE" />
+    <File Path="publish.bat" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="Strings.ResourceGenerator.Examples/Strings.ResourceGenerator.Examples.csproj" />
+  <Project Path="Strings.ResourceGenerator/Strings.ResourceGenerator.csproj" />
+  <Project Path="UnitTests/UnitTests.csproj" />
+</Solution>

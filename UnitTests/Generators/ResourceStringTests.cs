@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using Shouldly;
 using Strings.ResourceGenerator.Generators;
 using Strings.ResourceGenerator.Models;
 
@@ -12,13 +12,13 @@ public class ResourceStringTests
         var undertest = new ResourceString(null, "MyKey", "My simple value");
 
         // Simple assertions
-        undertest.Locale.Should().Be(null);
-        undertest.Key.Should().Be("MyKey");
-        undertest.Value.Should().Be("My simple value");
+        undertest.Locale.ShouldBeNull();
+        undertest.Key.ShouldBe("MyKey");
+        undertest.Value.ShouldBe("My simple value");
 
-        undertest.StringType.Should().Be(StringType.Simple);
-        undertest.CleanValueImplementation.Should().Be("My simple value");
-        undertest.Parameters.Count().Should().Be(0);
+        undertest.StringType.ShouldBe(StringType.Simple);
+        undertest.CleanValueImplementation.ShouldBe("My simple value");
+        undertest.Parameters.Count().ShouldBe(0);
 
         //rs.StaticProperty.Should().Be();
         //rs.InterfaceDeclaration.Should().Be();
@@ -36,19 +36,19 @@ public class ResourceStringTests
         var undertest = new ResourceString(null, "MyKey", value);
 
         // Simple assertions
-        undertest.Locale.Should().Be(null);
-        undertest.Key.Should().Be("MyKey");
-        undertest.Value.Should().Be(expectedValue);
+        undertest.Locale.ShouldBeNull();
+        undertest.Key.ShouldBe("MyKey");
+        undertest.Value.ShouldBe(expectedValue);
 
-        undertest.StringType.Should().Be(StringType.Format);
-        undertest.CleanValueImplementation.Should().Be(expectedValue);
+        undertest.StringType.ShouldBe(StringType.Format);
+        undertest.CleanValueImplementation.ShouldBe(expectedValue);
 
-        undertest.Parameters.Count().Should().Be(1);
-        undertest.Parameters[0].Name.Should().Be("arg0");
-        undertest.Parameters[0].OriginalName.Should().Be("0");
-        undertest.Parameters[0].Format.Should().Be(expectedFormat);
-        undertest.Parameters[0].Type.Should().Be(expectedType);
-        undertest.Parameters[0].Order.Should().Be(0);
+        undertest.Parameters.Count().ShouldBe(1);
+        undertest.Parameters[0].Name.ShouldBe("arg0");
+        undertest.Parameters[0].OriginalName.ShouldBe("0");
+        undertest.Parameters[0].Format.ShouldBe(expectedFormat);
+        undertest.Parameters[0].Type.ShouldBe(expectedType);
+        undertest.Parameters[0].Order.ShouldBe(0);
     }
 
     [Fact]
@@ -59,26 +59,26 @@ public class ResourceStringTests
         var undertest = new ResourceString(null, "MyKey", value);
 
         // Simple assertions
-        undertest.Locale.Should().Be(null);
-        undertest.Key.Should().Be("MyKey");
-        undertest.Value.Should().Be(expectedValue);
+        undertest.Locale.ShouldBeNull();
+        undertest.Key.ShouldBe("MyKey");
+        undertest.Value.ShouldBe(expectedValue);
 
-        undertest.StringType.Should().Be(StringType.Format);
-        undertest.CleanValueImplementation.Should().Be(expectedValue);
+        undertest.StringType.ShouldBe(StringType.Format);
+        undertest.CleanValueImplementation.ShouldBe(expectedValue);
 
-        undertest.Parameters.Count().Should().Be(2);
+        undertest.Parameters.Count().ShouldBe(2);
 
-        undertest.Parameters[0].Name.Should().Be("arg0");
-        undertest.Parameters[0].OriginalName.Should().Be("0");
-        undertest.Parameters[0].Format.Should().Be("");
-        undertest.Parameters[0].Type.Should().Be("string");
-        undertest.Parameters[0].Order.Should().Be(0);
+        undertest.Parameters[0].Name.ShouldBe("arg0");
+        undertest.Parameters[0].OriginalName.ShouldBe("0");
+        undertest.Parameters[0].Format.ShouldBe("");
+        undertest.Parameters[0].Type.ShouldBe("string");
+        undertest.Parameters[0].Order.ShouldBe(0);
 
-        undertest.Parameters[1].Name.Should().Be("arg1");
-        undertest.Parameters[1].OriginalName.Should().Be("1");
-        undertest.Parameters[1].Format.Should().Be(":n2");
-        undertest.Parameters[1].Type.Should().Be("object");
-        undertest.Parameters[1].Order.Should().Be(1);
+        undertest.Parameters[1].Name.ShouldBe("arg1");
+        undertest.Parameters[1].OriginalName.ShouldBe("1");
+        undertest.Parameters[1].Format.ShouldBe(":n2");
+        undertest.Parameters[1].Type.ShouldBe("object");
+        undertest.Parameters[1].Order.ShouldBe(1);
     }
 
     [Theory]
@@ -91,19 +91,19 @@ public class ResourceStringTests
         var undertest = new ResourceString(null, "MyKey", value);
 
         // Simple assertions
-        undertest.Locale.Should().Be(null);
-        undertest.Key.Should().Be("MyKey");
-        undertest.Value.Should().Be(expectedValue);
+        undertest.Locale.ShouldBeNull();
+        undertest.Key.ShouldBe("MyKey");
+        undertest.Value.ShouldBe(expectedValue);
 
-        undertest.StringType.Should().Be(expectedStringType);
-        undertest.CleanValueImplementation.Should().Be(expectedValue);
+        undertest.StringType.ShouldBe(expectedStringType);
+        undertest.CleanValueImplementation.ShouldBe(expectedValue);
 
-        undertest.Parameters.Count().Should().Be(1);
+        undertest.Parameters.Count().ShouldBe(1);
 
-        undertest.Parameters[0].Name.Should().Be(parameterName);
-        undertest.Parameters[0].OriginalName.Should().Be(parameter.Trim('{', '}'));
-        undertest.Parameters[0].Format.Should().Be("");
-        undertest.Parameters[0].Type.Should().Be("object");
-        undertest.Parameters[0].Order.Should().Be(expectedOrder);
+        undertest.Parameters[0].Name.ShouldBe(parameterName);
+        undertest.Parameters[0].OriginalName.ShouldBe(parameter.Trim('{', '}'));
+        undertest.Parameters[0].Format.ShouldBe("");
+        undertest.Parameters[0].Type.ShouldBe("object");
+        undertest.Parameters[0].Order.ShouldBe(expectedOrder);
     }
 }

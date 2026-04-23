@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Shouldly;
 using Strings.ResourceGenerator.Generators.StringsFile;
 using Strings.ResourceGenerator.Models;
 
@@ -18,12 +18,12 @@ public class MultiLocaleStringsCompilerTests
             config,
             ("MultiLocaleStrings.strings", lines));
 
-        generator.Config.GeneratePublic.Should().BeTrue();
-        generator.Config.NameSpace.Should().Be("Strings.ResourceGenerator.Examples.Resources");
-        generator.Config.ExcludeFromCodeCoverage.Should().BeTrue();
+        generator.Config.GeneratePublic.ShouldBeTrue();
+        generator.Config.NameSpace.ShouldBe("Strings.ResourceGenerator.Examples.Resources");
+        generator.Config.ExcludeFromCodeCoverage.ShouldBeTrue();
 
         var src = generator.Generate();
         File.WriteAllText($@"c:\tmp\generated.{nameof(MultiLocaleStringsCompilerTests)}.cs", src);
-        src.Should().NotBeNull();
+        src.ShouldNotBeNull();
     }
 }

@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using Shouldly;
 using Strings.ResourceGenerator.Helpers;
 
 namespace UnitTests;
@@ -9,11 +9,13 @@ public class UtilityTests
     [InlineData("abcdef", "abcdef")]
     [InlineData("// abcdef", "// abcdef")]
     [InlineData("// <abcdef>", "// &lt;abcdef&gt;")]
+    [InlineData("say \"hello\"", "say &quot;hello&quot;")]
+    [InlineData("it's", "it&apos;s")]
     [InlineData("The password length must be between 10 and 128 characters(inclusive) and contain at least 1 uppercase, 1 lowercase, 1 digit and 1 special character from the following set !@#€₽¢$₩¥£&*%<>()+°¨~=aaa|?:;,.[]^/{}_-.",
                 "The password length must be between 10 and 128 characters(inclusive) and contain at least 1 uppercase, 1 lowercase, 1 digit and 1 special character from the following set !@#€₽¢$₩¥£&amp;*%&lt;&gt;()+°¨~=aaa|?:;,.[]^/{}_-.")]
 
     public void DocumentationEncoder_Converts_Correctly(string unencoded, string expected)
     {
-        DocumentationEncoder.Encode(unencoded).Should().Be(expected);
+        DocumentationEncoder.Encode(unencoded).ShouldBe(expected);
     }
 }

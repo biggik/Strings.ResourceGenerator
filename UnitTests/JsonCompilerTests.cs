@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Shouldly;
 using Strings.ResourceGenerator.Generators.JsonFile;
 
 namespace UnitTests;
@@ -12,6 +12,6 @@ public class JsonCompilerTests
         var generator = JsonProvider.Provide("json.json", "MyClass", json);
         var src = generator.Generate();
         File.WriteAllText($@"c:\tmp\generated.{nameof(JsonCompilerTests)}.cs", src);
-        src.Should().NotBeNull();
+        src.ShouldNotBeNull();
     }
 }
