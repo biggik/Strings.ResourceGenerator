@@ -309,7 +309,7 @@ internal static class ImplementationGenerator
         w.OpenBlockForSemicolonClose();
         foreach (var res in generator.Data.Resources)
         {
-            w.Line($"{{ \"{res.Key}\", \"{res.CleanValueImplementation}\" }},");
+            w.Line($"{{ \"{res.Key}\", \"{res.CleanValueImplementationForDoubleQuotedLiteral}\" }},");
         }
 
         w.CloseBlockWithSemicolon();

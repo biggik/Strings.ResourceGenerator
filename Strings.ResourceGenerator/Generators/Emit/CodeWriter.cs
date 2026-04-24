@@ -121,8 +121,9 @@ internal sealed class CodeWriter
 
     /// <summary>
     /// Disposable scope returned by <see cref="OpenBlock"/>; calls <see cref="CloseBlock"/> on dispose.
+    /// Reference type so nested <c>using</c> cannot duplicate <see cref="Dispose"/> via struct copies.
     /// </summary>
-    public struct BlockScope : IDisposable
+    public sealed class BlockScope : IDisposable
     {
         private CodeWriter _writer;
 
@@ -141,7 +142,7 @@ internal sealed class CodeWriter
     /// <summary>
     /// Disposable scope that calls <see cref="PushIndent"/> on construction and <see cref="PopIndent"/> on dispose.
     /// </summary>
-    public struct IndentedScope : IDisposable
+    public sealed class IndentedScope : IDisposable
     {
         private CodeWriter _writer;
 

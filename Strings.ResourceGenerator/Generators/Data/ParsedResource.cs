@@ -50,8 +50,14 @@ internal class ParsedResource
     /// A representation of this resource as a class line
     /// </summary>
     public string ClassLine(bool preferConstOverStatic)
-        => getter.Replace("<string>", resourceString.CleanValueImplementation)
-                 .Replace("<getter_operator>", preferConstOverStatic ? "=" : "=>");
+    {
+        var escaped = resourceString.StringType == StringType.Interpolation
+            ? resourceString.CleanValueImplementationForInterpolatedLiteral
+            : resourceString.CleanValueImplementationForDoubleQuotedLiteral;
+
+        return getter.Replace("<string>", escaped)
+            .Replace("<getter_operator>", preferConstOverStatic ? "=" : "=>");
+    }
 
     /// <summary>
     /// Constructs a new instance of a resource string

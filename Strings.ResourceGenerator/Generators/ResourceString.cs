@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Strings.ResourceGenerator.Generators.Data;
 using Strings.ResourceGenerator.Generators.Parsers;
+using Strings.ResourceGenerator.Helpers;
 using Strings.ResourceGenerator.Models;
 
 namespace Strings.ResourceGenerator.Generators;
@@ -96,6 +97,19 @@ internal class ResourceString
             return res;
         }
     }
+
+    /// <summary>
+    /// <see cref="CleanValueImplementation"/> escaped for embedding in a C# standard string literal (<c>"..."</c>),
+    /// e.g. dictionary initializers and <see cref="StringType.Format"/> / <see cref="StringType.Simple"/> accessors.
+    /// </summary>
+    public string CleanValueImplementationForDoubleQuotedLiteral =>
+        CSharpStringLiteral.EscapeContentsForDoubleQuoted(CleanValueImplementation);
+
+    /// <summary>
+    /// <see cref="CleanValueImplementation"/> escaped for embedding in a C# interpolated string (<c>$"..."</c>).
+    /// </summary>
+    public string CleanValueImplementationForInterpolatedLiteral =>
+        CSharpStringLiteral.EscapeContentsForInterpolated(CleanValueImplementation);
 
     /// <summary>
     /// Constructs a new instance of a resource string
