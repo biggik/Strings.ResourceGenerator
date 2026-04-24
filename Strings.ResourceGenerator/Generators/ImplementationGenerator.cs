@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using Strings.ResourceGenerator.Generators.Emit;
 using Strings.ResourceGenerator.Generators.Interfaces;
 using Strings.ResourceGenerator.Helpers;
 using Strings.ResourceGenerator.Models;
@@ -13,50 +13,6 @@ namespace Strings.ResourceGenerator.Generators;
 /// </summary>
 internal static class ImplementationGenerator
 {
-    /// <summary>
-    /// Generate headers for string generation
-    /// </summary>
-    /// <param name="prefix">The prefix for each generated line</param>
-    /// <returns>An enumerable of strings</returns>
-    internal static IEnumerable<string> Headers(this IGenerator generator, string prefix)
-    {
-        static string PluralOrSingular(int i) => i == 1 ? "string" : "strings";
-        static string Formatted(int i) => string.Format("{0,4}", i);
-
-        int differentTypes = 0;
-        int cnt = generator.Data.Resources.Count(x => x.StringType == StringType.Simple);
-        if (cnt > 0)
-        {
-            differentTypes++;
-            yield return $"{prefix}{Constants.Ind1}{Formatted(cnt)} {PluralOrSingular(cnt)} without parameters";
-        }
-        cnt = generator.Data.Resources.Count(x => x.StringType == StringType.Format);
-        if (cnt > 0)
-        {
-            differentTypes++;
-            yield return $"{prefix}{Constants.Ind1}{Formatted(cnt)} {PluralOrSingular(cnt)} with String.Format replacements";
-        }
-        cnt = generator.Data.Resources.Count(x => x.StringType == StringType.Interpolation);
-        if (cnt > 0)
-        {
-            differentTypes++;
-            yield return $"{prefix}{Constants.Ind1}{Formatted(cnt)} {PluralOrSingular(cnt)} with interpolation parameters";
-        }
-
-        if (differentTypes > 1)
-        {
-            var count = generator.Data.Resources.Count;
-            yield return $"{prefix}{Constants.Ind1}====";
-            yield return $"{prefix}{Constants.Ind1}{Formatted(count)} total strings";
-        }
-
-        if (generator.Data.CommentedLines > 0)
-        {
-            yield return $"{Constants.Ind1}//";
-            yield return $"{prefix}{Constants.Ind1}{Formatted(generator.Data.CommentedLines)} commented out {PluralOrSingular(generator.Data.CommentedLines)}";
-        }
-    }
-
     /// <summary>
     /// The possible levels being generated
     /// </summary>
@@ -81,11 +37,11 @@ internal static class ImplementationGenerator
         Implementation,
 
         /// <summary>
-        /// The StaticAccessors level is used for generating the one-and-only implementation of a 
+        /// The StaticAccessors level is used for generating the one-and-only implementation of a
         /// resource that only has one language
         /// </summary>
         StaticAccessors
-    };
+    }
 
     public static string GeneratedClassName(this IGenerator generator, string locale = null)
         => $"GeneratedLocalizerFor{generator.Data.ClassName}{locale ?? generator.Data.Locale}";
@@ -93,206 +49,276 @@ internal static class ImplementationGenerator
     /// <summary>
     /// Generate an Interface implementation
     /// </summary>
-    /// <returns></returns>
     public static string GenerateInterface(this IGenerator generator)
         => Generate(generator, Level.Interface, withDocumentation: false);
 
     /// <summary>
     /// Generate a BaseType implementation
     /// </summary>
-    /// <returns></returns>
     public static string GenerateBaseType(this IGenerator generator)
         => Generate(generator, Level.BaseType, withDocumentation: false);
 
     /// <summary>
     /// Generate an Implementation implementation
     /// </summary>
-    /// <returns></returns>
     public static string GenerateClass(this IGenerator generator)
         => Generate(generator, Level.Implementation, withDocumentation: false);
 
     /// <summary>
     /// Generate a static accessor implementation
     /// </summary>
-    /// <returns></returns>
     public static string GenerateStaticAccessors(this IGenerator generator)
         => Generate(generator, Level.StaticAccessors, withDocumentation: true);
 
+    /// <summary>
+    /// Indent levels from column 0 for the root column of a generated nested fragment (
+    /// <see cref="Level.StaticAccessors"/> vs interface/base/implementation chunks).
+    /// </summary>
+    private static int OuterIndentLevels(Level level)
+        => level == Level.StaticAccessors ? 1 : 2;
+
+    /// <summary>
+    /// Space prefix matching legacy <c>Generate</c> output for embedded fragments (<see cref="ExcludeAttributeIndented"/> and dictionary initializer).
+    /// </summary>
+    private static string OuterIndentPrefix(Level level)
+        => Indent.Spaces(OuterIndentLevels(level));
+
     private static string Generate(IGenerator generator, Level level, bool withDocumentation)
     {
-        string indent = (level == Level.StaticAccessors ? "" : Constants.Ind1) + Constants.Ind1;
-        var buf = new StringBuilder();
+        var w = new CodeWriter();
+        const int outerLevels = 2;
+        for (var i = 0; i < outerLevels; i++)
+        {
+            w.PushIndent();
+        }
 
+        var indentPrefix = OuterIndentPrefix(level);
         string constructor = null;
+
         if (level == Level.Interface)
         {
-            buf.AppendLine($"{indent}#region IGeneratedLocalizerFor{generator.Data.ClassName}");
-            buf.AppendLine($"{indent}/// <summary>");
-            buf.AppendLine($"{indent}/// Interface IGeneratedLocalizerFor{generator.Data.ClassName} for string access to {generator.Data.ClassName} resources");
-            buf.AppendLine($"{indent}/// </summary>");
+            w.Line($"#region IGeneratedLocalizerFor{generator.Data.ClassName}");
+            w.Line("/// <summary>");
+            w.Line($"/// Interface IGeneratedLocalizerFor{generator.Data.ClassName} for string access to {generator.Data.ClassName} resources");
+            w.Line("/// </summary>");
             var modifier = generator.Data.Config.GeneratePublic ? "public" : "internal";
-            buf.AppendLine($"{indent}{modifier} interface IGeneratedLocalizerFor{generator.Data.ClassName}");
+            w.Line($"{modifier} interface IGeneratedLocalizerFor{generator.Data.ClassName}");
         }
         else if (level == Level.BaseType)
         {
             constructor = $"protected GeneratedLocalizerFor{generator.Data.ClassName}Base()";
-            buf.AppendLine($"{indent}#region GeneratedLocalizerFor{generator.Data.ClassName}Base");
-            buf.AddExcludeAttribute(generator.Data.Config.ExcludeFromCodeCoverage, generator.Data.Config.ExcludeFromCodeCoverageMessage, indent);
-            buf.AppendLine($"{indent}private abstract class GeneratedLocalizerFor{generator.Data.ClassName}Base");
+            w.Line($"#region GeneratedLocalizerFor{generator.Data.ClassName}Base");
+            w.EmitLine(indentPrefix.ExcludeAttributeIndented(
+                generator.Data.Config.ExcludeFromCodeCoverage,
+                generator.Data.Config.ExcludeFromCodeCoverageMessage));
+
+            w.Line($"private abstract class GeneratedLocalizerFor{generator.Data.ClassName}Base");
         }
         else if (level == Level.Implementation)
         {
-            buf.AppendLine($"{indent}#region {generator.GeneratedClassName()}");
-            buf.AddExcludeAttribute(generator.Data.Config.ExcludeFromCodeCoverage, generator.Data.Config.ExcludeFromCodeCoverageMessage, indent);
-            buf.AppendLine($"{indent}private class {generator.GeneratedClassName()} : GeneratedLocalizerFor{generator.Data.ClassName}Base, IGeneratedLocalizerFor{generator.Data.ClassName}");
+            w.Line($"#region {generator.GeneratedClassName()}");
+            w.EmitLine(indentPrefix.ExcludeAttributeIndented(
+                generator.Data.Config.ExcludeFromCodeCoverage,
+                generator.Data.Config.ExcludeFromCodeCoverageMessage));
+
+            w.Line($"private class {generator.GeneratedClassName()} : GeneratedLocalizerFor{generator.Data.ClassName}Base, IGeneratedLocalizerFor{generator.Data.ClassName}");
         }
         else if (level == Level.StaticAccessors)
         {
             constructor = $"static {generator.Data.ClassName}()";
         }
 
-        if (level != Level.StaticAccessors)
+        void WriteTypeBody()
         {
-            buf.AppendLine($"{indent}{{");
-        }
-
-        if (level == Level.Interface)
-        {
-            buf.AppendLine($"{indent}{Constants.Ind1}/// <summary>");
-            buf.AppendLine($"{indent}{Constants.Ind1}/// {LocalStrings.Unescape(LocalStrings.GetStringDoc)}");
-            buf.AppendLine($"{indent}{Constants.Ind1}/// </summary>");
-            buf.AppendLine($"{indent}{Constants.Ind1}string GetString(string name, params object[] args);");
-            buf.AppendLine();
-            buf.AppendLine($"{indent}{Constants.Ind1}/// <summary>");
-            buf.AppendLine($"{indent}{Constants.Ind1}/// {LocalStrings.Unescape(LocalStrings.GetStringOrEmptyDoc)}");
-            buf.AppendLine($"{indent}{Constants.Ind1}/// </summary>");
-            buf.AppendLine($"{indent}{Constants.Ind1}string GetStringOrEmpty(string name, params object[] args);");
-        }
-        if (level == Level.BaseType || level == Level.StaticAccessors)
-        {
-            var modifier = level == Level.StaticAccessors ? " static " : " ";
-            if (level == Level.BaseType)
+            if (level == Level.Interface)
             {
-                buf.AppendLine($"{indent}{Constants.Ind1}#region Generic string lookup (by dictionary)");
-            }
-            buf.AppendLine($"{indent}{Constants.Ind1}private {(level == Level.StaticAccessors ? "static " : "")}readonly Lazy<Dictionary<string, string>> lookup;");
-            buf.AppendLine($"{indent}{Constants.Ind1}{(level == Level.StaticAccessors ? "private static" : "protected")} Dictionary<string, string> Lookup => lookup.Value;");
-            buf.AppendLine();
-            if (!string.IsNullOrEmpty(constructor))
-            {
-                buf.AppendLine($"{indent}{Constants.Ind1}{constructor}");
-                buf.AppendLine($"{indent}{Constants.Ind1}{{");
-                buf.AppendLine($"{indent}{Constants.Ind2}lookup = new Lazy<Dictionary<string, string>>(() => InitializeLookupResources());");
-                buf.AppendLine($"{indent}{Constants.Ind1}}}");
-                buf.AppendLine();
-            }
-            buf.AppendLine($"{indent}{Constants.Ind1}/// <summary>");
-            buf.AppendLine($"{indent}{Constants.Ind1}/// {LocalStrings.Unescape(LocalStrings.GetStringDoc)}");
-            buf.AppendLine($"{indent}{Constants.Ind1}/// </summary>");
-            buf.AppendLine($"{indent}{Constants.Ind1}public{modifier}string GetString(string name, params object[] args)");
-            buf.AppendLine($"{indent}{Constants.Ind1}{{");
-            buf.AppendLine($"{indent}{Constants.Ind2}if (lookup.Value.ContainsKey(name))");
-            buf.AppendLine($"{indent}{Constants.Ind2}{{");
-            buf.AppendLine($"{indent}{Constants.Ind3}var s = lookup.Value[name];");
-            buf.AppendLine($"{indent}{Constants.Ind3}return args == null || args.Length == 0 ? s : string.Format(s, args);");
-            buf.AppendLine($"{indent}{Constants.Ind2}}}");
-            buf.AppendLine();
-            buf.AppendLine($"{indent}{Constants.Ind2}throw new ArgumentException($\"Lookup value {{name}} is not found in localized resources in {generator.Data.ClassName}\");");
-            buf.AppendLine($"{indent}{Constants.Ind1}}}");
-            buf.AppendLine();
-            buf.AppendLine($"{indent}{Constants.Ind1}/// <summary>");
-            buf.AppendLine($"{indent}{Constants.Ind1}/// {LocalStrings.Unescape(LocalStrings.GetStringOrEmptyDoc)}");
-            buf.AppendLine($"{indent}{Constants.Ind1}/// </summary>");
-            buf.AppendLine($"{indent}{Constants.Ind1}public{modifier}string GetStringOrEmpty(string name, params object[] args)");
-            buf.AppendLine($"{indent}{Constants.Ind1}{{");
-            buf.AppendLine($"{indent}{Constants.Ind2}try");
-            buf.AppendLine($"{indent}{Constants.Ind2}{{");
-            buf.AppendLine($"{indent}{Constants.Ind3}return GetString(name, args);");
-            buf.AppendLine($"{indent}{Constants.Ind2}}}");
-            buf.AppendLine($"{indent}{Constants.Ind2}catch (ArgumentException)");
-            buf.AppendLine($"{indent}{Constants.Ind2}{{");
-            buf.AppendLine($"{indent}{Constants.Ind3}return \"\";");
-            buf.AppendLine($"{indent}{Constants.Ind2}}}");
-            buf.AppendLine($"{indent}{Constants.Ind1}}}");
-
-            buf.AppendLine();
-
-            if (level == Level.BaseType)
-            {
-                buf.AppendLine($"{indent}{Constants.Ind1}protected abstract Dictionary<string, string> InitializeLookupResources();");
-                buf.AppendLine($"{indent}{Constants.Ind1}#endregion");
-                buf.AppendLine();
-            }
-        }
-        if (level == Level.Implementation || level == Level.StaticAccessors)
-        {
-            var modifier = level == Level.Implementation ? "protected override" : "static";
-            if (level == Level.Implementation)
-            {
-                buf.AppendLine($"{indent}{Constants.Ind1}#region Generic string lookup (by dictionary)");
-            }
-            buf.AppendLine($"{indent}{Constants.Ind1}{modifier} Dictionary<string, string> InitializeLookupResources() =>");
-            buf.AppendLine($"{indent}{Constants.Ind2}new Dictionary<string, string>");
-            buf.AppendLine($"{indent}{Constants.Ind2}{{");
-            foreach (var res in generator.Data.Resources)
-            {
-                buf.AppendLine($"{indent}{Constants.Ind3}{{ \"{res.Key}\", \"{res.CleanValueImplementation}\" }},");
-            }
-            buf.AppendLine($"{indent}{Constants.Ind2}}};");
-            if (level == Level.Implementation)
-            {
-                buf.AppendLine($"{indent}{Constants.Ind1}#endregion");
-            }
-        }
-
-        if (level != Level.BaseType)
-        {
-            if (level == Level.Implementation)
-            {
-                buf.AppendLine($"{indent}{Constants.Ind1}#region String accessors");
+                w.Line("/// <summary>");
+                w.Line($"/// {LocalStrings.Unescape(LocalStrings.GetStringDoc)}");
+                w.Line("/// </summary>");
+                w.Line("string GetString(string name, params object[] args);");
+                w.Line();
+                w.Line("/// <summary>");
+                w.Line($"/// {LocalStrings.Unescape(LocalStrings.GetStringOrEmptyDoc)}");
+                w.Line("/// </summary>");
+                w.Line("string GetStringOrEmpty(string name, params object[] args);");
             }
 
-            foreach (var res in generator.Data.Resources)
+            if (level == Level.BaseType || level == Level.StaticAccessors)
             {
-                if (level == Level.Interface)
+                WriteLazyLookupDictionaryAndRuntimeMethods(w, generator, level, constructor);
+            }
+
+            if (level == Level.Implementation || level == Level.StaticAccessors)
+            {
+                WriteInitializeLookupDictionary(w, generator, level);
+            }
+
+            if (level != Level.BaseType)
+            {
+                if (level == Level.Implementation)
                 {
-                    var fullDecl = $"{Constants.Ind1}{res.InterfaceDeclaration}";
-                    buf.AppendLine(Documentation(fullDecl, res.Context, res.CleanValueNonImplementation));
-                    buf.AppendLine(fullDecl);
+                    w.Line("#region String accessors");
                 }
-                else if (level == Level.Implementation || level == Level.StaticAccessors)
+
+                foreach (var res in generator.Data.Resources)
                 {
-                    var preferConst = !generator.Data.IsMultipleLanguages
-                        && generator.Data.Config.PreferConstOverStatic
-                        && res.StringType == StringType.Simple;
-                    var decl = level == Level.Implementation
-                        ? res.PublicProperty
-                        : res.PublicStaticProperty(preferConst);
-                    var extraIndent = level == Level.Implementation ? Constants.Ind1 : "";
-                    var impl = res.ClassLine(preferConst);
-
-                    var fullDecl = extraIndent + Splitter.SplitDeclAndImpl(decl, impl);
-
-                    if (withDocumentation)
+                    if (level == Level.Interface)
                     {
-                        buf.AppendLine(Documentation(fullDecl, res.Context, res.CleanValueNonImplementation));
+                        var fullDecl = $"{Indent.Spaces(1)}{res.InterfaceDeclaration}";
+                        w.EmitLine(Documentation(fullDecl, res.Context, res.CleanValueNonImplementation));
+                        w.EmitLine(fullDecl);
                     }
+                    else if (level == Level.Implementation || level == Level.StaticAccessors)
+                    {
+                        var preferConst = !generator.Data.IsMultipleLanguages
+                            && generator.Data.Config.PreferConstOverStatic
+                            && res.StringType == StringType.Simple;
+                        var decl = level == Level.Implementation
+                            ? res.PublicProperty
+                            : res.PublicStaticProperty(preferConst);
+                        var extraIndent = level == Level.Implementation ? Indent.Spaces(1) : "";
+                        var impl = res.ClassLine(preferConst);
 
-                    buf.AppendLine(fullDecl);
+                        var fullDecl = extraIndent + Splitter.SplitDeclAndImpl(decl, impl);
+
+                        if (withDocumentation)
+                        {
+                            w.EmitLine(Documentation(fullDecl, res.Context, res.CleanValueNonImplementation));
+                        }
+
+                        w.EmitLine(fullDecl);
+                    }
                 }
-            }
-            if (level == Level.Implementation)
-            {
-                buf.AppendLine($"{indent}{Constants.Ind1}#endregion");
+
+                if (level == Level.Implementation)
+                {
+                    w.Line("#endregion");
+                }
             }
         }
 
         if (level != Level.StaticAccessors)
         {
-            buf.AppendLine($"{indent}}}");
-            buf.AppendLine($"{indent}#endregion");
+            using (w.OpenBlock())
+            {
+                WriteTypeBody();
+            }
+
+            w.Line("#endregion");
         }
-        return buf.ToString();
+        else
+        {
+            WriteTypeBody();
+        }
+
+        for (var i = 0; i < outerLevels; i++)
+        {
+            w.PopIndent();
+        }
+
+        return w.ToString();
+    }
+
+    /// <summary>
+    /// Shared by <see cref="Level.BaseType"/> and <see cref="Level.StaticAccessors"/> — lazy dictionary, ctor, GetString / GetStringOrEmpty.
+    /// </summary>
+    private static void WriteLazyLookupDictionaryAndRuntimeMethods(
+        CodeWriter w,
+        IGenerator generator,
+        Level level,
+        string constructor)
+    {
+        var modifier = level == Level.StaticAccessors ? " static " : " ";
+        if (level == Level.BaseType)
+        {
+            w.Line("#region Generic string lookup (by dictionary)");
+        }
+
+        w.Line($"private {(level == Level.StaticAccessors ? "static " : "")}readonly Lazy<Dictionary<string, string>> lookup;");
+        w.Line($"{(level == Level.StaticAccessors ? "private static" : "protected")} Dictionary<string, string> Lookup => lookup.Value;");
+        w.Line();
+        if (!string.IsNullOrEmpty(constructor))
+        {
+            w.Line(constructor);
+            using (w.OpenBlock())
+            {
+                w.Line("lookup = new Lazy<Dictionary<string, string>>(() => InitializeLookupResources());");
+            }
+
+            w.Line();
+        }
+
+        w.Line("/// <summary>");
+        w.Line($"/// {LocalStrings.Unescape(LocalStrings.GetStringDoc)}");
+        w.Line("/// </summary>");
+        w.Line($"public{modifier}string GetString(string name, params object[] args)");
+        using (w.OpenBlock())
+        {
+            w.Line("if (lookup.Value.ContainsKey(name))");
+            using (w.OpenBlock())
+            {
+                w.Line("var s = lookup.Value[name];");
+                w.Line("return args == null || args.Length == 0 ? s : string.Format(s, args);");
+            }
+
+            w.Line();
+            w.Line($"throw new ArgumentException($\"Lookup value {{name}} is not found in localized resources in {generator.Data.ClassName}\");");
+        }
+
+        w.Line();
+        w.Line("/// <summary>");
+        w.Line($"/// {LocalStrings.Unescape(LocalStrings.GetStringOrEmptyDoc)}");
+        w.Line("/// </summary>");
+        w.Line($"public{modifier}string GetStringOrEmpty(string name, params object[] args)");
+        using (w.OpenBlock())
+        {
+            w.Line("try");
+            using (w.OpenBlock())
+            {
+                w.Line("return GetString(name, args);");
+            }
+
+            w.Line("catch (ArgumentException)");
+            using (w.OpenBlock())
+            {
+                w.Line("return \"\";");
+            }
+        }
+
+        w.Line();
+
+        if (level == Level.BaseType)
+        {
+            w.Line("protected abstract Dictionary<string, string> InitializeLookupResources();");
+            w.Line("#endregion");
+            w.Line();
+        }
+    }
+
+    private static void WriteInitializeLookupDictionary(CodeWriter w, IGenerator generator, Level level)
+    {
+        var modifier = level == Level.Implementation ? "protected override" : "static";
+        if (level == Level.Implementation)
+        {
+            w.Line("#region Generic string lookup (by dictionary)");
+        }
+
+        w.Line($"{modifier} Dictionary<string, string> InitializeLookupResources() =>");
+        w.PushIndent();
+        w.Line("new Dictionary<string, string>");
+        w.OpenBlockForSemicolonClose();
+        foreach (var res in generator.Data.Resources)
+        {
+            w.Line($"{{ \"{res.Key}\", \"{res.CleanValueImplementation}\" }},");
+        }
+
+        w.CloseBlockWithSemicolon();
+        w.PopIndent();
+
+        if (level == Level.Implementation)
+        {
+            w.Line("#endregion");
+        }
     }
 
     /// <summary>
@@ -312,6 +338,7 @@ internal static class ImplementationGenerator
         {
             yield return $"{declIndent}/// {FormatForDoc(values[i])}{(i == values.Length - 1 ? "" : " <br/>")}";
         }
+
         if (!string.IsNullOrWhiteSpace(context))
         {
             yield return $"{declIndent}/// <remarks>";
@@ -319,6 +346,7 @@ internal static class ImplementationGenerator
             yield return $"{declIndent}/// <para>{context}</para>";
             yield return $"{declIndent}/// </remarks>";
         }
+
         yield return $"{declIndent}/// </summary>";
     }
 
