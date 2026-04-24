@@ -11,8 +11,8 @@ public class ParsedResourceTests
     public void ParsedResource_SimpleValue_Validates()
     {
         string locale = null;
-        string key = "MyKey";
-        string value = "My simple value";
+        var key = "MyKey";
+        var value = "My simple value";
 
         var res = new ResourceString(locale, key, value);
         var parser = new ResourceParser(locale, key, value);
@@ -33,8 +33,8 @@ public class ParsedResourceTests
     public void ParsedResource_StandardFormat_Validates()
     {
         string locale = null;
-        string key = "MyKey";
-        string value = "My simple {0}";
+        var key = "MyKey";
+        var value = "My simple {0}";
 
         var res = new ResourceString(locale, key, value);
         var parser = new ResourceParser(locale, key, value);
@@ -55,8 +55,8 @@ public class ParsedResourceTests
     public void ParsedResource_StandardTwoFormat_Validates()
     {
         string locale = null;
-        string key = "MyKey";
-        string value = "{1} simple {0}";
+        var key = "MyKey";
+        var value = "{1} simple {0}";
 
         var res = new ResourceString(locale, key, value);
         var parser = new ResourceParser(locale, key, value);
@@ -77,8 +77,8 @@ public class ParsedResourceTests
     public void ParsedResource_InterpolatedFormat_Validates()
     {
         string locale = null;
-        string key = "MyKey";
-        string value = "My simple {value}";
+        var key = "MyKey";
+        var value = "My simple {value}";
 
         var res = new ResourceString(locale, key, value);
         var parser = new ResourceParser(locale, key, value);
@@ -99,8 +99,8 @@ public class ParsedResourceTests
     public void ParsedResource_InterpolatedTwoFormat_Validates()
     {
         string locale = null;
-        string key = "MyKey";
-        string value = "{who} simple {value}";
+        var key = "MyKey";
+        var value = "{who} simple {value}";
 
         var res = new ResourceString(locale, key, value);
         var parser = new ResourceParser(locale, key, value);
@@ -117,13 +117,12 @@ public class ParsedResourceTests
         undertest.ClassLine(true).Trim().ShouldBe("= $\"{who} simple {value}\";");
     }
 
-
     [Fact]
     public void ParsedResource_Escaped_Validates()
     {
         string locale = null;
-        string key = "MyKey";
-        string value = "{{ParameterName}} simple";
+        var key = "MyKey";
+        var value = "{{ParameterName}} simple";
 
         var res = new ResourceString(locale, key, value);
         var parser = new ResourceParser(locale, key, value);
@@ -144,8 +143,8 @@ public class ParsedResourceTests
     public void ParsedResource_MixedEscapedAndInterpolated_Validates()
     {
         string locale = null;
-        string key = "MyKey";
-        string value = "{{ParameterName}} simple {value@string}";
+        var key = "MyKey";
+        var value = "{{ParameterName}} simple {value@string}";
 
         var res = new ResourceString(locale, key, value);
         var parser = new ResourceParser(locale, key, value);

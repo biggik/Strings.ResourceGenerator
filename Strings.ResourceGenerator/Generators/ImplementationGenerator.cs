@@ -334,7 +334,7 @@ internal static class ImplementationGenerator
         yield return "";
         yield return $"{declIndent}/// <summary>";
 
-        for (int i = 0; i < values.Length; i++)
+        for (var i = 0; i < values.Length; i++)
         {
             yield return $"{declIndent}/// {FormatForDoc(values[i])}{(i == values.Length - 1 ? "" : " <br/>")}";
         }

@@ -33,6 +33,7 @@ internal class LocalizerGenerator
         {
             locale = Constants.Neutral;
         }
+
         generators[locale] = generator;
     }
 
@@ -89,7 +90,7 @@ internal class LocalizerGenerator
                             }
                         }
 
-                        foreach (var value in ImplementationGenerator.DocumentationLines(decl, res.Context, Values().ToArray()))
+                        foreach (var value in ImplementationGenerator.DocumentationLines(decl, res.Context, [.. Values()]))
                         {
                             w.EmitLine(value);
                         }
