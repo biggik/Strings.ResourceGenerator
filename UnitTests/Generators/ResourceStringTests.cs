@@ -27,6 +27,56 @@ public class ResourceStringTests
         //rs.ClassLine.Should().Be();
     }
 
+    /// <summary>
+    /// GenerateLocalizers / 5.2: authors write <c>\r\n</c> in .strings as C#-literal text.
+    /// Emit must pass those sequences through (not double backslashes) so the C# compiler
+    /// produces real newlines in the const/accessor.
+    /// </summary>
+    [Fact]
+    public void ResourceString_CrLfEscapesInStringsFile_BecomeRealNewlinesInConst()
+    {
+        // Characters as stored when reading Key=line1\r\n\r\nline2 from a .strings file
+        const string fromStringsFile = "line1\\r\\n\\r\\nline2";
+
+        var undertest = new ResourceString(null, "UpdateAvailable", fromStringsFile);
+
+        // Clean value keeps author escapes — no expand-to-real-newline step
+        undertest.CleanValueImplementation.ShouldBe(fromStringsFile);
+
+        var emitted = undertest.CleanValueImplementationForDoubleQuotedLiteral;
+        // Must not turn \r into \\r (that yielded visible \r\n in the UI)
+        emitted.ShouldBe(fromStringsFile);
+
+        var syntax = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(
+            "class T { const string S = \"" + emitted + "\"; }"
+        );
+        var literal = syntax
+            .GetRoot()
+            .DescendantNodes()
+            .OfType<Microsoft.CodeAnalysis.CSharp.Syntax.LiteralExpressionSyntax>()
+            .Single();
+        literal.Token.ValueText.ShouldBe("line1\r\n\r\nline2");
+    }
+
+    [Fact]
+    public void ResourceString_QuotedTextAndBackslashPath_RoundTripThroughCsharpLiteral()
+    {
+        // .strings: Say \"hi\" and D:\\data\\file  (avoid \t/\n/\r in path — same as C# literals)
+        const string fromStringsFile = "Say \\\"hi\\\" and D:\\\\data\\\\file";
+        var undertest = new ResourceString(null, "PathMsg", fromStringsFile);
+
+        var emitted = undertest.CleanValueImplementationForDoubleQuotedLiteral;
+        var syntax = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(
+            "class T { const string S = \"" + emitted + "\"; }"
+        );
+        var literal = syntax
+            .GetRoot()
+            .DescendantNodes()
+            .OfType<Microsoft.CodeAnalysis.CSharp.Syntax.LiteralExpressionSyntax>()
+            .Single();
+        literal.Token.ValueText.ShouldBe("Say \"hi\" and D:\\data\\file");
+    }
+
     [Theory]
     [InlineData("My simple value: {0}", "My simple value: {0}", "", "object")]
     [InlineData("My simple value: {0@string}", "My simple value: {0}", "", "string")]

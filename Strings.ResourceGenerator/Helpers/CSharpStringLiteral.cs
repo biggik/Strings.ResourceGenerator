@@ -3,14 +3,31 @@ using System.Text;
 namespace Strings.ResourceGenerator.Helpers;
 
 /// <summary>
-/// Escapes text for embedding in generated C# source (no extra assemblies required at analyzer load time).
+/// Embeds <c>.strings</c> values into generated C# string literals.
 /// </summary>
+/// <remarks>
+/// Contract matches legacy <c>GenerateLocalizers</c>: the file already contains C#-literal
+/// spelling (<c>\r\n</c>, <c>\"</c>, <c>\\</c>). Backslash sequences are copied through so the
+/// C# compiler interprets them — they are not expanded and re-escaped.
+/// <list type="bullet">
+/// <item>Bare <c>"</c> (not preceded by <c>\</c>) is escaped so accidental quotes do not break codegen.</item>
+/// <item>Real control characters (actual CR/LF in the file) are escaped to <c>\r</c>/<c>\n</c>/…</item>
+/// </list>
+/// </remarks>
 internal static class CSharpStringLiteral
 {
     /// <summary>
-    /// Escapes text placed inside a normal <c>"..."</c> literal (contents only, no surrounding quotes).
+    /// Contents for a normal <c>"..."</c> literal (no surrounding quotes).
     /// </summary>
-    public static string EscapeContentsForDoubleQuoted(string value)
+    public static string EscapeContentsForDoubleQuoted(string value) => EscapeForNonVerbatimLiteral(value);
+
+    /// <summary>
+    /// Contents for an interpolated <c>$"..."</c> literal. Same rules; does not escape
+    /// <c>{</c>/<c>}</c> (interpolation holes belong to the parser).
+    /// </summary>
+    public static string EscapeContentsForInterpolated(string value) => EscapeForNonVerbatimLiteral(value);
+
+    private static string EscapeForNonVerbatimLiteral(string value)
     {
         if (string.IsNullOrEmpty(value))
         {
@@ -40,10 +57,20 @@ internal static class CSharpStringLiteral
             switch (c)
             {
                 case '\\':
-                    sb.Append("\\\\");
+                    // Pass through — part of author escapes (\r, \n, \\, \", …).
+                    sb.Append('\\');
                     break;
                 case '\"':
-                    sb.Append("\\\"");
+                    // Odd number of preceding '\' → already escaped in .strings; even → bare quote.
+                    if (IsEscapedByPrecedingBackslashes(value, i))
+                    {
+                        sb.Append('"');
+                    }
+                    else
+                    {
+                        sb.Append("\\\"");
+                    }
+
                     break;
                 case '\0':
                     sb.Append("\\0");
@@ -86,16 +113,14 @@ internal static class CSharpStringLiteral
         return sb.ToString();
     }
 
-    /// <summary>
-    /// Escapes <c>\</c> and <c>"</c> for text inside an interpolated string (<c>$"..."</c>).
-    /// </summary>
-    public static string EscapeContentsForInterpolated(string value)
+    private static bool IsEscapedByPrecedingBackslashes(string value, int index)
     {
-        if (string.IsNullOrEmpty(value))
+        var count = 0;
+        for (var j = index - 1; j >= 0 && value[j] == '\\'; j--)
         {
-            return "";
+            count++;
         }
 
-        return value.Replace("\\", "\\\\").Replace("\"", "\\\"");
+        return count % 2 == 1;
     }
 }

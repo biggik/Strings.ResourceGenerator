@@ -70,7 +70,9 @@ internal class ResourceString
     public string ClassLine(bool preferConstOverStatic) => parsed.ClassLine(preferConstOverStatic);
 
     /// <summary>
-    /// The value cleaned of any unnecessary escapes
+    /// Value as stored for docs / display: collapse <c>\\r</c> → <c>\r</c> etc. (same as
+    /// GenerateLocalizers). Does not interpret escapes into real control characters —
+    /// the C# compiler does that after emit.
     /// </summary>
     public string CleanValueNonImplementation
         => Value.Replace("\\\\r", "\\r")
@@ -102,7 +104,8 @@ internal class ResourceString
     /// <see cref="CleanValueImplementation"/> escaped for embedding in a C# standard string literal (<c>"..."</c>),
     /// e.g. dictionary initializers and <see cref="StringType.Format"/> / <see cref="StringType.Simple"/> accessors.
     /// </summary>
-    public string CleanValueImplementationForDoubleQuotedLiteral => CSharpStringLiteral.EscapeContentsForDoubleQuoted(CleanValueImplementation);
+    public string CleanValueImplementationForDoubleQuotedLiteral => 
+        CSharpStringLiteral.EscapeContentsForDoubleQuoted(CleanValueImplementation);
 
     /// <summary>
     /// <see cref="CleanValueImplementation"/> escaped for embedding in a C# interpolated string (<c>$"..."</c>).
